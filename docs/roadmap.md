@@ -18,6 +18,7 @@
 - [ ] Build scoring algorithm to rank vanity combinations
 - [ ] **Generate and score ALL possible combinations**
 - [ ] **Select BEST 5 vanity numbers based on scoring**
+- [ ] **Implement fallback strategy** (when no good vanity options exist)
 - [ ] **Save all 5 results to DynamoDB with caller's number**
 
 ### Retriever Lambda (For Connect)
@@ -36,7 +37,8 @@
 ### CDK Deployment
 - [ ] Define DynamoDB table schema (phone number + 5 vanity results)
 - [ ] Deploy both Lambda functions with proper permissions
-- [ ] Set up environment variables and configuration
+- [ ] Set up environment variables (DynamoDB table name, region)
+- [ ] Configure Lambda timeout settings (under 8 seconds for Connect)
 - [ ] Test deployed functions meet 5-store/3-return requirement
 
 ### Data Validation
@@ -72,7 +74,8 @@
 - [ ] Document scoring algorithm and AI word selection process
 - [ ] **Record demo video calling toll-free number**
 - [ ] Update README with live phone number for testing
-- [ ] Add deployment instructions
+- [ ] Document fallback strategy implementation
+- [ ] **Calculate and document AWS cost estimation** for the demo
 
 ### Final Testing Checklist
 - [ ] Call toll-free number and verify 3 vanity numbers spoken
