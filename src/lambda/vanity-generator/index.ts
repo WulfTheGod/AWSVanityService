@@ -1,5 +1,21 @@
 import { Context, Callback } from 'aws-lambda';
 
+// Phone keypad mapping
+const KEYPAD_MAP: { [key: string]: string[] } = {
+    '2': ['A', 'B', 'C'],
+    '3': ['D', 'E', 'F'],
+    '4': ['G', 'H', 'I'],
+    '5': ['J', 'K', 'L'],
+    '6': ['M', 'N', 'O'],
+    '7': ['P', 'Q', 'R', 'S'],
+    '8': ['T', 'U', 'V'],
+    '9': ['W', 'X', 'Y', 'Z']
+};
+
+function getLettersForDigit(digit: string): string[] {
+    return KEYPAD_MAP[digit] || [];
+}
+
 function cleanPhoneNumber(phoneNumber: string): string {
     // Remove all non-digits
     const digitsOnly = phoneNumber.replace(/[^0-9]/g, '');
