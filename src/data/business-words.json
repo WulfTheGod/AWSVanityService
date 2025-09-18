@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "description": "Business-focused word dictionary for vanity number generation",
+    "generation_method": "AI-curated for maximum business value and memorability",
+    "focus": "Last 7 digits of phone numbers for professional appearance",
+    "scoring_rationale": "Higher scores for action words and memorable business terms"
+  },
+  "words": {
+    "CALL": {
+      "digits": "2255",
+      "score": 95,
+      "category": "action",
+      "length": 4
+    },
+    "HELP": {
+      "digits": "4357",
+      "score": 90,
+      "category": "service",
+      "length": 4
+    },
+    "BEST": {
+      "digits": "2378",
+      "score": 85,
+      "category": "quality",
+      "length": 4
+    },
+    "FAST": {
+      "digits": "3278",
+      "score": 80,
+      "category": "speed",
+      "length": 4
+    },
+    "SAVE": {
+      "digits": "7283",
+      "score": 85,
+      "category": "benefit",
+      "length": 4
+    },
+    "DEAL": {
+      "digits": "3325",
+      "score": 75,
+      "category": "offer",
+      "length": 4
+    },
+    "CASH": {
+      "digits": "2274",
+      "score": 80,
+      "category": "money",
+      "length": 4
+    },
+    "FREE": {
+      "digits": "3733",
+      "score": 90,
+      "category": "offer",
+      "length": 4
+    },
+    "SHOP": {
+      "digits": "7467",
+      "score": 70,
+      "category": "action",
+      "length": 4
+    },
+    "BOOK": {
+      "digits": "2665",
+      "score": 75,
+      "category": "action",
+      "length": 4
+    },
+    "AUTO": {
+      "digits": "2886",
+      "score": 65,
+      "category": "industry",
+      "length": 4
+    },
+    "HOME": {
+      "digits": "4663",
+      "score": 70,
+      "category": "industry",
+      "length": 4
+    },
+    "CARE": {
+      "digits": "2273",
+      "score": 75,
+      "category": "service",
+      "length": 4
+    },
+    "TECH": {
+      "digits": "8324",
+      "score": 70,
+      "category": "industry",
+      "length": 4
+    },
+    "COOL": {
+      "digits": "2665",
+      "score": 50,
+      "category": "quality",
+      "length": 4
+    },
+    "GOOD": {
+      "digits": "4663",
+      "score": 55,
+      "category": "quality",
+      "length": 4
+    },
+    "EXPERT": {
+      "digits": "397378",
+      "score": 80,
+      "category": "quality",
+      "length": 6
+    },
+    "REPAIR": {
+      "digits": "737247",
+      "score": 70,
+      "category": "service",
+      "length": 6
+    },
+    "SUPPLY": {
+      "digits": "787759",
+      "score": 65,
+      "category": "service",
+      "length": 6
+    },
+    "DELIVER": {
+      "digits": "3354837",
+      "score": 75,
+      "category": "service",
+      "length": 7
+    },
+    "SERVICE": {
+      "digits": "7378423",
+      "score": 75,
+      "category": "service",
+      "length": 7
+    },
+    "CONNECT": {
+      "digits": "2666328",
+      "score": 85,
+      "category": "action",
+      "length": 7
+    },
+    "SUPPORT": {
+      "digits": "7877678",
+      "score": 80,
+      "category": "service",
+      "length": 7
+    }
+  },
+  "scoring_weights": {
+    "word_score": 0.6,
+    "length_preference": 0.2,
+    "position_bonus": 0.2
+  },
+  "length_bonuses": {
+    "4": 10,
+    "5": 8,
+    "6": 5,
+    "7": 3
+  }
+}

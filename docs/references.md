@@ -13,6 +13,7 @@
 - [Lambda Handler in Node.js](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html) - Handler function signature and event processing
 - [Amazon Connect Lambda Function Input Event](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html#function-input) - Understanding Connect event structure
 - [Lambda Error Handling](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-exceptions.html) - Proper error handling patterns
+- [AWS Lambda Powertools](https://docs.powertools.aws.dev/lambda/typescript/latest/) - Production-ready logging and observability
 
 ## Research & Planning
 
