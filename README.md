@@ -16,6 +16,7 @@ This project demonstrates a production-ready serverless application that:
 |----------|---------|
 | [Development Journal](./docs/development-journal.md) | Daily progress, challenges faced, and solutions implemented |
 | [Architecture Decisions](./docs/architecture.md) | Technical choices and trade-offs explained |
+| [Project Roadmap](./docs/roadmap.md) | Implementation phases and requirements checklist |
 | [References & Resources](./docs/references.md) | AWS documentation, tutorials, and resources used |
 
 ## 🏗️ Architecture Overview
