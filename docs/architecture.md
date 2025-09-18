@@ -13,15 +13,17 @@ This service uses a simple, serverless architecture on AWS to convert phone numb
 - **Trade-off**: Cold starts (~1s) are acceptable for demo purposes
 
 ### 2. Data Model
-- **Choice**: DynamoDB single-table design
+- **Choice**: DynamoDB single-table design with phone number as partition key
 - **Schema**:
   ```
-  PK: PHONE#<phoneNumber>
-  SK: VANITY#<timestamp>
-  Attributes: vanityNumbers[], scores[]
+  phoneNumber: "5551234567"         // Partition key
+  vanityNumbers: ["555-CALL-NOW"]   // All 5 generated results
+  top3: ["555-CALL-NOW"]            // Top 3 for Connect
+  createdAt: "2025-09-18T..."
+  ttl: 1632847200                   // 30-day auto-deletion
   ```
-- **Why**: Simple, efficient lookups per caller
-- **Trade-off**: Less flexible than relational schema, but fine for this use case
+- **Why**: Simple, efficient caching with automatic cleanup
+- **Trade-off**: One record per caller, but perfect for demo requirements
 
 ### 3. Vanity Number Generation
 - **Choice**: Dictionary-based scoring system

@@ -26,7 +26,6 @@ export class AwsVanityServiceStack extends cdk.Stack {
       architecture: lambda.Architecture.ARM_64,
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
-      tracing: lambda.Tracing.ACTIVE,
       logRetention: logs.RetentionDays.ONE_WEEK,
       environment: {
         VANITY_TABLE_NAME: vanityTable.tableName,
