@@ -1,7 +1,13 @@
 import { Context } from 'aws-lambda';
 import { Logger } from '@aws-lambda-powertools/logger';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 
 const englishWords = require('../../data/english-words.json');
+
+const dynamoClient = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(dynamoClient);
+const tableName = process.env.VANITY_TABLE_NAME!;
 
 const logger = new Logger({ serviceName: 'vanity-generator' });
 
@@ -124,6 +130,45 @@ function generateRandomLetterCombinations(areaCode: string, digits: string, coun
     return Array.from(combinations);
 }
 
+async function getExistingVanityNumbers(phoneNumber: string) {
+    try {
+        const command = new GetCommand({
+            TableName: tableName,
+            Key: { phoneNumber }
+        });
+
+        const result = await docClient.send(command);
+        return result.Item;
+    } catch (error) {
+        logger.error('Failed to get existing vanity numbers', { error, phoneNumber: maskPhoneNumber(phoneNumber) });
+        return null;
+    }
+}
+
+async function saveVanityNumbers(phoneNumber: string, vanityNumbers: string[], top3: string[]) {
+    try {
+        const command = new PutCommand({
+            TableName: tableName,
+            Item: {
+                phoneNumber,
+                vanityNumbers,
+                top3,
+                createdAt: new Date().toISOString(),
+                ttl: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) // 30 days TTL
+            }
+        });
+
+        await docClient.send(command);
+        logger.info('Vanity numbers saved to DynamoDB', {
+            phoneNumber: maskPhoneNumber(phoneNumber),
+            count: vanityNumbers.length
+        });
+    } catch (error) {
+        logger.error('Failed to save vanity numbers', { error, phoneNumber: maskPhoneNumber(phoneNumber) });
+        throw error;
+    }
+}
+
 export const handler = async (event: any, context: Context) => {
     logger.info('Processing vanity number request');
 
@@ -144,17 +189,39 @@ export const handler = async (event: any, context: Context) => {
             last7Digits: maskPhoneNumber('000' + cleanedPhoneNumber.slice(-7))
         });
 
+        // Check if we already have vanity numbers for this caller
+        const existingRecord = await getExistingVanityNumbers(cleanedPhoneNumber);
+
+        if (existingRecord) {
+            logger.info('Returning cached vanity numbers', {
+                phoneNumber: maskPhoneNumber(cleanedPhoneNumber),
+                cachedCount: existingRecord.vanityNumbers?.length || 0
+            });
+
+            return {
+                vanityNumbers: existingRecord.vanityNumbers || [],
+                top3: existingRecord.top3 || [],
+                cached: true
+            };
+        }
+
+        // Generate new vanity numbers
         const vanityNumbers = generateVanityNumbers(cleanedPhoneNumber);
         const top3 = vanityNumbers.slice(0, 3);
 
-        logger.info('Generated vanity numbers', {
+        // Save to DynamoDB for future calls
+        await saveVanityNumbers(cleanedPhoneNumber, vanityNumbers, top3);
+
+        logger.info('Generated and saved new vanity numbers', {
+            phoneNumber: maskPhoneNumber(cleanedPhoneNumber),
             count: vanityNumbers.length,
             top3Count: top3.length
         });
 
         return {
             vanityNumbers,
-            top3
+            top3,
+            cached: false
         };
     } catch (error) {
         logger.error('Failed to process vanity number request', { error });
