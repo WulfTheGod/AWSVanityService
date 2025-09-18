@@ -1,159 +1,143 @@
 {
   "metadata": {
-    "description": "Business-focused word dictionary for vanity number generation",
-    "generation_method": "AI-curated for maximum business value and memorability",
-    "focus": "Last 7 digits of phone numbers for professional appearance",
-    "scoring_rationale": "Higher scores for action words and memorable business terms"
+    "description": "Business-focused and consumer-relevant word dictionary for vanity number generation",
+    "generation_method": "Curated list; maps letters to T9 digits; tuned for North American small-business use-cases",
+    "focus": "Matches within last 7 digits; supports partial and multi-word combinations",
+    "last_updated": "2025-09-18"
   },
-  "words": {
-    "CALL": {
-      "digits": "2255",
-      "score": 95,
-      "category": "action",
-      "length": 4
-    },
-    "HELP": {
-      "digits": "4357",
-      "score": 90,
-      "category": "service",
-      "length": 4
-    },
-    "BEST": {
-      "digits": "2378",
-      "score": 85,
-      "category": "quality",
-      "length": 4
-    },
-    "FAST": {
-      "digits": "3278",
-      "score": 80,
-      "category": "speed",
-      "length": 4
-    },
-    "SAVE": {
-      "digits": "7283",
-      "score": 85,
-      "category": "benefit",
-      "length": 4
-    },
-    "DEAL": {
-      "digits": "3325",
-      "score": 75,
-      "category": "offer",
-      "length": 4
-    },
-    "CASH": {
-      "digits": "2274",
-      "score": 80,
-      "category": "money",
-      "length": 4
-    },
-    "FREE": {
-      "digits": "3733",
-      "score": 90,
-      "category": "offer",
-      "length": 4
-    },
-    "SHOP": {
-      "digits": "7467",
-      "score": 70,
-      "category": "action",
-      "length": 4
-    },
-    "BOOK": {
-      "digits": "2665",
-      "score": 75,
-      "category": "action",
-      "length": 4
-    },
-    "AUTO": {
-      "digits": "2886",
-      "score": 65,
-      "category": "industry",
-      "length": 4
-    },
-    "HOME": {
-      "digits": "4663",
-      "score": 70,
-      "category": "industry",
-      "length": 4
-    },
-    "CARE": {
-      "digits": "2273",
-      "score": 75,
-      "category": "service",
-      "length": 4
-    },
-    "TECH": {
-      "digits": "8324",
-      "score": 70,
-      "category": "industry",
-      "length": 4
-    },
-    "COOL": {
-      "digits": "2665",
-      "score": 50,
-      "category": "quality",
-      "length": 4
-    },
-    "GOOD": {
-      "digits": "4663",
-      "score": 55,
-      "category": "quality",
-      "length": 4
-    },
-    "EXPERT": {
-      "digits": "397378",
-      "score": 80,
-      "category": "quality",
-      "length": 6
-    },
-    "REPAIR": {
-      "digits": "737247",
-      "score": 70,
-      "category": "service",
-      "length": 6
-    },
-    "SUPPLY": {
-      "digits": "787759",
-      "score": 65,
-      "category": "service",
-      "length": 6
-    },
-    "DELIVER": {
-      "digits": "3354837",
-      "score": 75,
-      "category": "service",
-      "length": 7
-    },
-    "SERVICE": {
-      "digits": "7378423",
-      "score": 75,
-      "category": "service",
-      "length": 7
-    },
-    "CONNECT": {
-      "digits": "2666328",
-      "score": 85,
-      "category": "action",
-      "length": 7
-    },
-    "SUPPORT": {
-      "digits": "7877678",
-      "score": 80,
-      "category": "service",
-      "length": 7
-    }
+  "matching_rules": {
+    "allow_inside_number": true,
+    "prefer_trailing_match": true,
+    "max_words_per_number": 2,
+    "min_word_length": 3,
+    "max_word_length": 7,
+    "skip_digits": ["0", "1"],
+    "boundary_digits": ["0", "1"]
   },
   "scoring_weights": {
-    "word_score": 0.6,
-    "length_preference": 0.2,
-    "position_bonus": 0.2
+    "word_score": 0.5,
+    "category_weight": 0.2,
+    "length_bonus": 0.15,
+    "position_bonus": 0.1,
+    "completeness": 0.05
+  },
+  "category_multipliers": {
+    "action": 1.0,
+    "service": 0.95,
+    "offer": 1.0,
+    "money": 0.95,
+    "industry": 0.9,
+    "quality": 0.9,
+    "consumer": 0.85,
+    "trust": 1.0,
+    "location": 0.85,
+    "generic": 0.8
   },
   "length_bonuses": {
+    "3": 7,
     "4": 10,
-    "5": 8,
-    "6": 5,
-    "7": 3
+    "5": 9,
+    "6": 6,
+    "7": 4
+  },
+  "penalties": {
+    "letters": { "Q": 2, "Z": 2, "X": 1 }
+  },
+  "fallback_rules": {
+    "t9_candidate_limit": 100,
+    "vowel_bonus": 2,
+    "repeat_letter_bonus": 1,
+    "penalize_awkward_letters": true,
+    "return_digits_if_no_match": true,
+    "ssml_spell_out_when_no_match": true
+  },
+  "words": {
+    "CALL": { "digits": "2255", "score": 95, "category": "action", "length": 4 },
+    "HELP": { "digits": "4357", "score": 90, "category": "action", "length": 4 },
+    "BUY": { "digits": "289", "score": 70, "category": "action", "length": 3 },
+    "GET": { "digits": "438", "score": 60, "category": "action", "length": 3 },
+    "FIND": { "digits": "3463", "score": 75, "category": "action", "length": 4 },
+    "BOOK": { "digits": "2665", "score": 75, "category": "action", "length": 4 },
+    "SHOP": { "digits": "7467", "score": 70, "category": "action", "length": 4 },
+    "ORDER": { "digits": "67337", "score": 78, "category": "action", "length": 5 },
+    "MOVE": { "digits": "6683", "score": 68, "category": "action", "length": 4 },
+    "CLEAN": { "digits": "25326", "score": 76, "category": "action", "length": 5 },
+    "BUILD": { "digits": "28453", "score": 74, "category": "action", "length": 5 },
+    "FIX": { "digits": "349", "score": 65, "category": "action", "length": 3 },
+    "PAY": { "digits": "729", "score": 68, "category": "action", "length": 3 },
+    "REPAIR": { "digits": "737247", "score": 73, "category": "action", "length": 6 },
+    "INSTALL": { "digits": "4678255", "score": 72, "category": "action", "length": 7 },
+    "UPGRADE": { "digits": "8747233", "score": 72, "category": "action", "length": 7 },
+    "RENEW": { "digits": "73639", "score": 68, "category": "action", "length": 5 },
+    "CLAIM": { "digits": "25246", "score": 74, "category": "action", "length": 5 },
+    "RIDE": { "digits": "7433", "score": 68, "category": "action", "length": 4 },
+    "TOW": { "digits": "869", "score": 62, "category": "action", "length": 3 },
+    "TUNE": { "digits": "8863", "score": 62, "category": "action", "length": 4 },
+    "DRIVE": { "digits": "37483", "score": 68, "category": "action", "length": 5 },
+    "QUOTE": { "digits": "78683", "score": 66, "category": "action", "length": 5 },
+
+    "CARE": { "digits": "2273", "score": 75, "category": "service", "length": 4 },
+    "SERVICE": { "digits": "7378423", "score": 75, "category": "service", "length": 7 },
+    "SUPPORT": { "digits": "7877678", "score": 80, "category": "service", "length": 7 },
+    "ASSIST": { "digits": "277478", "score": 74, "category": "service", "length": 6 },
+    "INFO": { "digits": "4636", "score": 70, "category": "service", "length": 4 },
+    "ADVICE": { "digits": "238423", "score": 73, "category": "service", "length": 6 },
+    "CONTACT": { "digits": "2668228", "score": 74, "category": "service", "length": 7 },
+    "SCHEDULE": { "digits": "72423353", "score": 72, "category": "service", "length": 8 },
+    "DELIVER": { "digits": "3354837", "score": 75, "category": "service", "length": 7 },
+
+    "FREE": { "digits": "3733", "score": 90, "category": "offer", "length": 4 },
+    "DEAL": { "digits": "3325", "score": 75, "category": "offer", "length": 4 },
+    "SALE": { "digits": "7253", "score": 75, "category": "offer", "length": 4 },
+    "SAVE": { "digits": "7283", "score": 85, "category": "offer", "length": 4 },
+    "BONUS": { "digits": "26687", "score": 72, "category": "offer", "length": 5 },
+
+    "CASH": { "digits": "2274", "score": 80, "category": "money", "length": 4 },
+    "CREDIT": { "digits": "273348", "score": 72, "category": "money", "length": 6 },
+    "FINANCE": { "digits": "3462623", "score": 74, "category": "money", "length": 7 },
+    "LOAN": { "digits": "5626", "score": 70, "category": "money", "length": 4 },
+    "REBATE": { "digits": "732283", "score": 70, "category": "money", "length": 6 },
+
+    "AUTO": { "digits": "2886", "score": 65, "category": "industry", "length": 4 },
+    "TECH": { "digits": "8324", "score": 70, "category": "industry", "length": 4 },
+    "HOME": { "digits": "4663", "score": 70, "category": "industry", "length": 4 },
+    "LEGAL": { "digits": "53425", "score": 65, "category": "industry", "length": 5 },
+    "DENTAL": { "digits": "336825", "score": 65, "category": "industry", "length": 6 },
+    "MEDICAL": { "digits": "6334225", "score": 70, "category": "industry", "length": 7 },
+    "PLUMB": { "digits": "75862", "score": 66, "category": "industry", "length": 5 },
+    "HVAC": { "digits": "4822", "score": 64, "category": "industry", "length": 4 },
+    "PEST": { "digits": "7378", "score": 66, "category": "industry", "length": 4 },
+    "ROOF": { "digits": "7663", "score": 64, "category": "industry", "length": 4 },
+    "TAXI": { "digits": "8294", "score": 64, "category": "industry", "length": 4 },
+    "BANK": { "digits": "2265", "score": 66, "category": "industry", "length": 4 },
+    "REALTY": { "digits": "732589", "score": 68, "category": "industry", "length": 6 },
+    "INSURE": { "digits": "467873", "score": 68, "category": "industry", "length": 6 },
+    "SOLAR": { "digits": "76527", "score": 68, "category": "industry", "length": 5 },
+    "MOVERS": { "digits": "668377", "score": 66, "category": "industry", "length": 6 },
+
+    "BEST": { "digits": "2378", "score": 85, "category": "quality", "length": 4 },
+    "FAST": { "digits": "3278", "score": 80, "category": "quality", "length": 4 },
+    "QUICK": { "digits": "78425", "score": 78, "category": "quality", "length": 5 },
+    "SMART": { "digits": "76278", "score": 74, "category": "quality", "length": 5 },
+    "LOCAL": { "digits": "56225", "score": 72, "category": "quality", "length": 5 },
+    "TOP": { "digits": "867", "score": 68, "category": "quality", "length": 3 },
+    "NEW": { "digits": "639", "score": 65, "category": "quality", "length": 3 },
+    "PRO": { "digits": "776", "score": 72, "category": "quality", "length": 3 },
+    "MAX": { "digits": "629", "score": 70, "category": "quality", "length": 3 },
+
+    "TRUST": { "digits": "87878", "score": 78, "category": "trust", "length": 5 },
+    "SAFE": { "digits": "7233", "score": 74, "category": "trust", "length": 4 },
+    "SECURE": { "digits": "732873", "score": 74, "category": "trust", "length": 6 },
+    "GUARD": { "digits": "48273", "score": 70, "category": "trust", "length": 5 },
+    "ALERT": { "digits": "25378", "score": 68, "category": "trust", "length": 5 },
+
+    "PETS": { "digits": "7387", "score": 66, "category": "consumer", "length": 4 },
+    "KIDS": { "digits": "5437", "score": 64, "category": "consumer", "length": 4 },
+    "TOYS": { "digits": "8697", "score": 64, "category": "consumer", "length": 4 },
+    "GAMES": { "digits": "42637", "score": 66, "category": "consumer", "length": 5 },
+    "FOOD": { "digits": "3663", "score": 64, "category": "consumer", "length": 4 },
+    "PIZZA": { "digits": "74992", "score": 72, "category": "consumer", "length": 5 },
+    "YARD": { "digits": "9273", "score": 64, "category": "consumer", "length": 4 },
+    "GARDEN": { "digits": "427336", "score": 66, "category": "consumer", "length": 6 }
   }
 }
