@@ -1,0 +1,36 @@
+{
+  "name": "awsvanityservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cdk": "cdk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WulfTheGod/AWSVanityService.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/WulfTheGod/AWSVanityService/issues"
+  },
+  "homepage": "https://github.com/WulfTheGod/AWSVanityService#readme",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.891.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "@types/node": "^24.5.2",
+    "aws-cdk-lib": "^2.215.0",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
