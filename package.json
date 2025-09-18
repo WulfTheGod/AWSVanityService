@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "cdk": "cdk"
   },
   "repository": {
@@ -28,10 +30,13 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.152",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
     "aws-cdk-lib": "^2.215.0",
     "constructs": "^10.4.2",
     "esbuild": "^0.25.10",
+    "jest": "^30.1.3",
+    "ts-jest": "^29.4.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }

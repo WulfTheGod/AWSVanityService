@@ -21,7 +21,7 @@ export class AwsVanityServiceStack extends cdk.Stack {
 
     const vanityGeneratorFunction = new nodejs.NodejsFunction(this, 'VanityGeneratorFunction', {
       functionName: 'vanity-generator',
-      entry: 'src/lambda/vanity-generator/index.ts',
+      entry: 'src/lambda/vanity-generator/handler.ts',
       runtime: lambda.Runtime.NODEJS_20_X,
       architecture: lambda.Architecture.ARM_64,
       timeout: cdk.Duration.seconds(30),

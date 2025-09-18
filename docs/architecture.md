@@ -25,12 +25,27 @@ This service uses a simple, serverless architecture on AWS to convert phone numb
 - **Why**: Simple, efficient caching with automatic cleanup
 - **Trade-off**: One record per caller, but perfect for demo requirements
 
-### 3. Vanity Number Generation
+### 3. Modular Code Architecture
+- **Choice**: Individual TypeScript files for each function with centralized types
+- **Structure**:
+  ```
+  src/lambda/vanity-generator/
+  ├── handler.ts          # Main Lambda entry point
+  ├── types.ts            # All interfaces and constants
+  ├── clean-phone.ts      # Phone number cleaning logic
+  ├── find-words.ts       # Dictionary word matching
+  ├── generate-vanity.ts  # Main orchestration logic
+  └── [other modules...]
+  ```
+- **Why**: Better maintainability, easier testing, clear separation of concerns
+- **Trade-off**: More files but much cleaner codebase
+
+### 4. Vanity Number Generation
 - **Choice**: Dictionary-based scoring system
 - **Why**: Produces more meaningful results than random mapping
 - **Trade-off**: Requires maintaining a small word list
 
-### 4. Infrastructure as Code
+### 5. Infrastructure as Code
 - **Choice**: AWS CDK (TypeScript)
 - **Why**: Type safety, reusable constructs, repeatable deployments
 - **Trade-off**: Slightly larger deployment package vs raw CloudFormation

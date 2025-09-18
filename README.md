@@ -100,8 +100,8 @@ cd AWSVanityService
 # Install dependencies
 npm install
 
-# Test the vanity generation algorithm
-node tests/vanity-generation.test.js
+# Run TypeScript tests with Jest
+npm test
 
 # Bootstrap CDK (first time only)
 cdk bootstrap
@@ -113,16 +113,19 @@ cdk deploy
 ### Current Implementation Status
 
 **✅ Completed Infrastructure:**
-- **Single Lambda Function**: Consolidated vanity generation and caching logic with AWS SDK v3
+- **Modular Lambda Function**: Clean separation of concerns with individual TypeScript modules
 - **DynamoDB Table**: Optimized caching with 30-day TTL and proper encryption
 - **CDK Stack**: ARM64, structured logging, log retention, and cost-optimized configuration
 - **Algorithm**: 90%+ success rate with 13,248-word English dictionary
+- **TypeScript Testing**: Comprehensive Jest test suite with proper type checking
 
 **📋 Implementation Highlights:**
-- **Streamlined Architecture**: Single-function approach eliminates complexity
+- **Modular Architecture**: Each function has its own file for maintainability and testing
+- **Type Safety**: Single types.ts file with all interfaces and constants
 - **Caching Strategy**: Stores exactly 5 vanity numbers, returns top 3 for Connect
 - **Production Features**: PII masking, comprehensive error handling, structured logging
-- **Performance**: ARM64 architecture, 1.7MB optimized bundle, 30-second timeout
+- **Testing**: Jest-based TypeScript tests with coverage reporting
+- **Performance**: ARM64 architecture, optimized bundle, 30-second timeout
 - **Integration Ready**: CloudFormation outputs configured for Amazon Connect
 
 **🏗️ Project Structure:**
@@ -136,15 +139,25 @@ cdk deploy
 │   │   └── english-words.json   # 13,248 optimized English words
 │   └── lambda/
 │       └── vanity-generator/
-│           └── index.ts         # Complete vanity service logic
+│           ├── handler.ts       # Main Lambda handler
+│           ├── types.ts         # TypeScript interfaces and constants
+│           ├── clean-phone.ts   # Phone number cleaning
+│           ├── mask-phone.ts    # Phone number masking for logs
+│           ├── find-words.ts    # Word matching algorithm
+│           ├── format-vanity.ts # Vanity number formatting
+│           ├── random-letters.ts # Random letter generation
+│           ├── generate-vanity.ts # Main vanity generation logic
+│           ├── get-data.ts      # DynamoDB data retrieval
+│           └── save-data.ts     # DynamoDB data storage
 ├── tests/
-│   ├── phone-cleaning.test.js   # Input validation tests
-│   ├── keypad-mapping.test.js   # T9 mapping tests
-│   └── vanity-generation.test.js # Interactive algorithm test
+│   ├── phone-cleaning.test.ts   # TypeScript Jest tests for input validation
+│   ├── keypad-mapping.test.ts   # TypeScript Jest tests for T9 mapping
+│   └── vanity-generation.test.ts # TypeScript Jest tests for algorithm
 ├── scripts/
 │   └── generate-english-dictionary.js # Dictionary generation tool
 ├── connect/
 │   └── flow.json               # Amazon Connect contact flow (pending)
+├── jest.config.js              # Jest testing configuration
 └── docs/                       # Comprehensive documentation
 ```
 

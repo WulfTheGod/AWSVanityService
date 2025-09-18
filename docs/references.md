@@ -47,6 +47,8 @@
 
 ### Development Tools
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/) - Language reference and best practices
+- [Jest Testing Framework](https://jestjs.io/docs/getting-started) - JavaScript testing framework
+- [ts-jest](https://kulshekhar.github.io/ts-jest/) - TypeScript preprocessor for Jest
 - [esbuild](https://esbuild.github.io/) - Fast JavaScript bundler used by CDK
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices) - Production-ready Node.js patterns
 
