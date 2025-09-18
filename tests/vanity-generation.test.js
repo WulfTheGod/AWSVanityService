@@ -7,8 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-// Load the business dictionary
-const dictionaryPath = path.join(__dirname, '../src/data/business-words.json');
+// Load the English dictionary
+const dictionaryPath = path.join(__dirname, '../src/data/english-words.json');
 const dictionary = JSON.parse(fs.readFileSync(dictionaryPath, 'utf8'));
 
 // Phone cleaning function
