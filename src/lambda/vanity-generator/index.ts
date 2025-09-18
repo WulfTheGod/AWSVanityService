@@ -1,4 +1,7 @@
 import { Context, Callback } from 'aws-lambda';
+import { Logger } from '@aws-lambda-powertools/logger';
+
+const logger = new Logger({ serviceName: 'vanity-generator' });
 
 // Phone keypad mapping
 const KEYPAD_MAP: { [key: string]: string[] } = {
@@ -29,15 +32,18 @@ function cleanPhoneNumber(phoneNumber: string): string {
 }
 
 export const handler = async (event: any, context: Context, callback: Callback) => {
-    console.log('Event:', JSON.stringify(event, null, 2));
+    logger.info('Processing vanity number request', { event });
 
     try {
         // Extract phone number from Connect event
         const rawPhoneNumber = event.Details?.ContactData?.CustomerEndpoint?.Address || '';
         const cleanedPhoneNumber = cleanPhoneNumber(rawPhoneNumber);
 
-        console.log('Raw phone number:', rawPhoneNumber);
-        console.log('Cleaned phone number:', cleanedPhoneNumber);
+        logger.info('Phone number processed', {
+            rawPhoneNumber,
+            cleanedPhoneNumber,
+            last7Digits: cleanedPhoneNumber.slice(-7)
+        });
 
         // TODO: Generate vanity numbers from cleanedPhoneNumber
 
@@ -46,7 +52,7 @@ export const handler = async (event: any, context: Context, callback: Callback) 
             vanityNumbers: []
         });
     } catch (error) {
-        console.error('Error processing phone number:', error);
+        logger.error('Failed to process vanity number request', { error });
         callback(null, {
             statusCode: 500,
             error: 'Failed to process phone number'

@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/WulfTheGod/AWSVanityService#readme",
   "dependencies": {
+    "@aws-lambda-powertools/logger": "^2.26.1",
     "@aws-sdk/client-dynamodb": "^3.891.0"
   },
   "devDependencies": {
