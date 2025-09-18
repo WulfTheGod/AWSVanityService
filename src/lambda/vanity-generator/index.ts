@@ -1,4 +1,4 @@
-import { Context, Callback } from 'aws-lambda';
+import { Context } from 'aws-lambda';
 import { Logger } from '@aws-lambda-powertools/logger';
 
 const logger = new Logger({ serviceName: 'vanity-generator' });
@@ -31,7 +31,7 @@ function cleanPhoneNumber(phoneNumber: string): string {
     return digitsOnly;
 }
 
-export const handler = async (event: any, context: Context, callback: Callback) => {
+export const handler = async (event: any, context: Context) => {
     logger.info('Processing vanity number request', { event });
 
     try {
@@ -47,15 +47,15 @@ export const handler = async (event: any, context: Context, callback: Callback) 
 
         // TODO: Generate vanity numbers from cleanedPhoneNumber
 
-        callback(null, {
+        return {
             statusCode: 200,
             vanityNumbers: []
-        });
+        };
     } catch (error) {
         logger.error('Failed to process vanity number request', { error });
-        callback(null, {
+        return {
             statusCode: 500,
             error: 'Failed to process phone number'
-        });
+        };
     }
 };
