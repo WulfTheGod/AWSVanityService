@@ -4,22 +4,22 @@
 
 ## Project Requirements (From Assignment)
 - ✅ Lambda converts phone numbers to vanity numbers
-- ✅ **Save the BEST 5 vanity numbers** to DynamoDB table
-- ✅ Connect contact flow **says the TOP 3** vanity possibilities
-- ✅ Live Amazon Connect phone number for testing
+- 🔄 **Save the BEST 5 vanity numbers** to DynamoDB table
+- 🔄 Connect contact flow **says the TOP 3** vanity possibilities
+- 🔄 Live Amazon Connect phone number for testing
 - ✅ Git repo with all code and documentation
 
 ## Phase 1: Core Lambda Implementation ✅
 
 ### Generator Lambda (Primary Function)
-- [x] Clean phone number input (remove non-digits, handle formatting)
-- [x] Implement phone keypad mapping (2=ABC, 3=DEF, etc.)
-- [x] Create optimized English word dictionary (13,248 words with scores)
-- [x] Build scoring algorithm to rank vanity combinations
-- [x] **Generate and score vanity number combinations**
-- [x] **Select BEST 5 vanity numbers based on scoring**
-- [x] **Implement fallback strategy** (random letter combinations with deduplication)
-- [x] **Production enhancements**: PII masking, input validation, error handling
+- ✅ Clean phone number input (remove non-digits, handle formatting)
+- ✅ Implement phone keypad mapping (2=ABC, 3=DEF, etc.)
+- ✅ Create optimized English word dictionary (13,248 words with scores)
+- ✅ Build scoring algorithm to rank vanity combinations
+- ✅ **Generate and score vanity number combinations**
+- ✅ **Select BEST 5 vanity numbers based on scoring**
+- ✅ **Implement fallback strategy** (random letter combinations with deduplication)
+- ✅ **Production enhancements**: PII masking, input validation, error handling
 - [ ] **Save all 5 results to DynamoDB with caller's number**
 
 ### Retriever Lambda (For Connect)
@@ -29,9 +29,9 @@
 - [ ] Format response for Connect voice output
 
 ### Testing Requirements Met
-- [x] ✅ **Algorithm Testing**: Verified 90%+ success rate with English dictionary
-- [x] ✅ **Interactive Testing**: Built test tool showing successful word matching
-- [x] ✅ **Production Testing**: Confirmed PII masking, validation, error handling
+- ✅ **Algorithm Testing**: Verified 90%+ success rate with English dictionary
+- ✅ **Interactive Testing**: Built test tool showing successful word matching
+- ✅ **Production Testing**: Confirmed PII masking, validation, error handling
 - [ ] Verify exactly 5 numbers saved to DynamoDB
 - [ ] Confirm top 3 are returned to Connect
 - [ ] Test with multiple caller numbers
