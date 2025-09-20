@@ -26,6 +26,24 @@
 - [AWS CDK TypeScript Reference](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda-readme.html) - Lambda constructs
 - [CDK Lambda-NodeJS Function](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda_nodejs-readme.html) - Bundling and deployment
 - [CDK DynamoDB Table](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_dynamodb-readme.html) - Table configuration
+- [CDK Connect CfnContactFlow](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_connect.CfnContactFlow.html) - Connect contact flow deployment
+
+### Amazon Connect Integration
+- [Create an Amazon Connect Instance](https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html) - Instance setup and configuration
+- [Grant Amazon Connect Access to Lambda](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html) - Lambda integration setup
+- [Amazon Connect Contact Flow Language](https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html) - Contact flow JSON structure
+- [Invoke Lambda Function Block](https://docs.aws.amazon.com/connect/latest/adminguide/invoke-lambda-function-block.html) - Lambda invocation in flows
+
+### CI/CD Pipeline
+- [GitHub Actions for AWS](https://github.com/aws-actions/configure-aws-credentials) - AWS credential configuration
+- [CDK GitHub Actions](https://docs.aws.amazon.com/cdk/v2/guide/cli.html#cli-deploy) - Automated CDK deployment
+- [Jest GitHub Actions](https://jestjs.io/docs/getting-started#using-github-actions) - Automated testing
+
+### Security & OIDC Integration
+- [AWS IAM OIDC Identity Providers](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) - Setting up GitHub OIDC federation
+- [GitHub OIDC with AWS](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) - Configuring GitHub Actions OIDC
+- [CDK Connect CfnContactFlow](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_connect.CfnContactFlow.html) - Contact flow deployment reference
+- [Connect Lambda Functions](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html) - Lambda integration with Amazon Connect
 
 ## Research & Planning
 

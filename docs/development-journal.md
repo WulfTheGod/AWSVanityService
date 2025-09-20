@@ -190,13 +190,92 @@
 - All IAM permissions properly configured for DynamoDB read/write operations
 - CloudFormation template generates clean outputs for Connect configuration
 
+## Day 2: September 20, 2025
+### Focus
+- Implement GitHub Actions CI/CD pipeline
+- Create Amazon Connect contact flow with CDK automation
+- Finalize documentation and deployment processes
+
+### Key Achievements
+**CI/CD Pipeline Implementation:**
+- Built GitHub Actions workflow for automated testing and deployment
+- Configured Jest test execution on every push and pull request
+- Automated CDK deployment on main branch with proper credential management
+- Added support for Connect instance ARN via GitHub secrets
+
+**Amazon Connect Integration:**
+- Created production-ready contact flow JSON that invokes Lambda and speaks results
+- Implemented CDK-based contact flow deployment using CfnContactFlow
+- Added proper IAM permissions for Connect to invoke Lambda function
+- Designed hybrid approach: manual instance setup + automated flow deployment
+
+**Documentation Enhancements:**
+- Created comprehensive deployment guide with step-by-step Connect setup
+- Updated all documentation to reflect CI/CD and Connect integration
+- Added troubleshooting section and cost estimates
+- Ensured consistency across all resource names and terminology
+
+### Technical Decisions
+**Hybrid Connect Deployment Strategy:**
+- Manual: Instance creation, Lambda permissions, phone number claiming (CDK cannot automate)
+- Automated: Contact flow deployment via CDK when CONNECT_INSTANCE_ARN is provided
+- Reasoning: Balances automation with AWS service limitations
+
+**GitHub Actions Design:**
+- Pinned action versions for security and reproducibility
+- Single concurrency group prevents multiple deployments
+- Environment variable injection for Connect instance ARN
+- Automatic failure on test failures
+
+### Critical Issues Resolved
+**Lambda ARN Injection Challenge:**
+- Problem: Connect flows require full Lambda ARNs, not just function names
+- Initial approach: Used `"LambdaFunctionARN": "vanity-generator"` (invalid)
+- Solution: CDK now dynamically replaces placeholder with actual ARN during deployment
+- Implementation: `contactFlowTemplate.replace('LAMBDA_ARN_PLACEHOLDER', vanityGeneratorFunction.functionArn)`
+
+**Connect Permission Complexity:**
+- Issue: Connect requires both CDK permissions AND manual Lambda registration
+- Learning: Even with proper IAM permissions, Connect won't show Lambda in flow editor without manual "Add Lambda" step
+- Resolution: Documentation now emphasizes this critical manual step that cannot be automated
+
+**CDK Stack Simplification:**
+- Removed fallback account-level permissions to enforce proper ARN usage
+- Simplified deployment by requiring CONNECT_INSTANCE_ARN environment variable
+- Result: Cleaner, more secure permission model scoped to specific Connect instance
+
+### Security Architecture Evolution
+**GitHub OIDC Federation Implementation:**
+- **Initial Approach**: Static AWS access keys stored in GitHub secrets
+- **Security Concern**: Long-lived credentials pose unnecessary risk
+- **Solution**: Implemented GitHub OIDC federation with temporary role assumption
+- **Implementation**:
+  - Created AWS OIDC identity provider for `token.actions.githubusercontent.com`
+  - IAM role with repository-specific trust conditions
+  - Workflow assumes role instead of using stored credentials
+
+**IAM Permissions Strategy:**
+- **Demo Decision**: Used `AdministratorAccess` for rapid development
+- **Justification**: Eliminates permission debugging during algorithm development phase
+- **Production Alternative**: Documented least-privilege policy with specific service permissions
+- **Trade-off Analysis**: Development speed vs security best practices
+
+**Connect Integration Learnings:**
+- **Discovery**: CDK can create contact flows but not Connect instances
+- **Manual Requirements**: Instance creation, Lambda registration, phone number claiming
+- **Automation Boundary**: Clear distinction between what CDK can/cannot manage
+- **Documentation Impact**: Emphasized critical manual steps that enable automation
+
 ### Current Implementation Status
 **Core Requirements Completed:**
 - ✅ Lambda converts phone numbers to vanity numbers (90%+ success rate)
 - ✅ Saves exactly 5 best vanity numbers to DynamoDB table
+- ✅ Returns top 3 vanity numbers for Connect voice integration
 - ✅ Caching strategy prevents regeneration for repeat callers
-- ✅ Infrastructure ready for Connect integration (outputs configured)
-- ✅ Production-ready with proper error handling and logging
+- ✅ Infrastructure deployed via CDK with proper IAM permissions
+- ✅ Contact flow ready for deployment via CDK
+- ✅ CI/CD pipeline with automated testing and deployment
+- ✅ Production-ready with comprehensive error handling and logging
 
 **Architectural Simplification (Completed)**
 - Consolidated all functionality into single Lambda function for clarity

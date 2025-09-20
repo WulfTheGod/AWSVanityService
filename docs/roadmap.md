@@ -44,6 +44,8 @@
 - ✅ Set up environment variables (DynamoDB table name, LOG_LEVEL)
 - ✅ Configure Lambda timeout settings (30 seconds, ARM64, structured logging)
 - ✅ Fix AWS SDK v3 bundling for runtime compatibility
+- ✅ Add Connect IAM permissions for Lambda invocation
+- ✅ Configure CDK to deploy contact flow when CONNECT_INSTANCE_ARN is set
 - [ ] Deploy to AWS and test deployed functions meet 5-store/3-return requirement
 
 ### Data Validation
@@ -52,13 +54,21 @@
 - ✅ Add comprehensive error handling for generation and storage failures
 - [ ] End-to-end testing with deployed infrastructure
 
+### CI/CD Pipeline
+- ✅ GitHub Actions workflow for automated testing and deployment
+- ✅ Automatic Jest test execution on pull requests
+- ✅ Automated CDK deployment on main branch push
+- ✅ Support for Connect instance ID via GitHub secrets
+- ✅ Production-ready deployment pipeline
+
 ## Phase 3: Amazon Connect Integration
 
 ### Connect Setup with Toll-Free Number
-- [ ] Create Amazon Connect instance
-- [ ] Configure toll-free number
-- [ ] Build contact flow that calls Generator Lambda
-- [ ] **Configure flow to speak TOP 3 vanity numbers to caller**
+- [ ] Create Amazon Connect instance (manual)
+- [ ] Add Lambda function to Connect instance (manual)
+- ✅ Build contact flow that calls Generator Lambda (CDK-deployed)
+- ✅ **Configure flow to speak TOP 3 vanity numbers to caller**
+- [ ] Claim toll-free number and associate with flow (manual)
 - [ ] Test complete flow: call → generate 5 → store 5 → speak 3
 
 ### Voice Experience Requirements
