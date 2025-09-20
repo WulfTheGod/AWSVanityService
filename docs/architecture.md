@@ -50,10 +50,26 @@ This service uses a simple, serverless architecture on AWS to convert phone numb
 - **Why**: Type safety, reusable constructs, repeatable deployments
 - **Trade-off**: Slightly larger deployment package vs raw CloudFormation
 
+### 6. CI/CD Pipeline
+- **Choice**: GitHub Actions with automated testing and deployment
+- **Flow**: Push → Jest tests → CDK deploy (if tests pass)
+- **Why**: Simple, integrated with GitHub, no additional infrastructure needed
+- **Trade-off**: GitHub dependency vs self-hosted CI/CD
+
+### 7. Connect Integration Strategy
+- **Choice**: Hybrid approach - manual instance setup + CDK flow deployment
+- **Why**: Connect instances require manual setup, but flows can be version-controlled
+- **Implementation**:
+  - Manual: Create instance, claim number, add Lambda permissions
+  - Automated: Contact flow deployed via CDK when CONNECT_INSTANCE_ARN is set
+- **Trade-off**: Some manual steps vs full automation (which isn't possible with Connect)
+
 ## Security
-- IAM: Lambda roles restricted to DynamoDB + CloudWatch only
-- Data: DynamoDB encrypted at rest by default
-- Logs: Caller numbers masked in logs, no sensitive data stored
+- **IAM**: Lambda roles restricted to DynamoDB + CloudWatch only
+- **Connect**: Service-specific permissions for Lambda invocation, scoped to account
+- **Data**: DynamoDB encrypted at rest by default
+- **Logs**: Caller numbers masked in logs, no sensitive data stored
+- **CI/CD**: AWS credentials stored as GitHub secrets, not in code
 
 ## Performance Targets
 - Lambda execution: Sub-second response time
