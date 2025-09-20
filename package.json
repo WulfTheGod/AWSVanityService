@@ -1,7 +1,7 @@
 {
   "name": "awsvanityservice",
   "version": "1.0.0",
-  "description": "",
+  "description": "Serverless vanity phone number generator using AWS Lambda, DynamoDB, and Amazon Connect",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/WulfTheGod/AWSVanityService.git"
   },
-  "keywords": [],
+  "keywords": ["aws", "lambda", "vanity-numbers", "serverless", "amazon-connect", "dynamodb", "phone-numbers", "cdk"],
   "author": "",
   "license": "ISC",
   "type": "commonjs",

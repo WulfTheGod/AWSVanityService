@@ -156,7 +156,7 @@ cd AWSVanityService
 # Set up GitHub OIDC and variables:
 # - Configure AWS OIDC identity provider and IAM role
 # - Go to Settings → Secrets and variables → Actions → Variables
-# - Add AWS_ROLE_ARN, AWS_REGION, CONNECT_INSTANCE_ARN
+# - Add AWS_ROLE_ARN only (Connect setup is manual)
 
 # Deploy automatically by pushing to main
 git push origin main
