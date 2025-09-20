@@ -1,0 +1,132 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "greeting",
+  "Actions": [
+    {
+      "Identifier": "greeting",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Hello! I'll generate vanity phone numbers for you. Please wait a moment while I process your number."
+      },
+      "Transitions": {
+        "NextAction": "invoke-lambda",
+        "Errors": [
+          {
+            "NextAction": "error-handler",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "invoke-lambda",
+      "Type": "InvokeLambdaFunction",
+      "Parameters": {
+        "LambdaFunctionARN": "LAMBDA_ARN_PLACEHOLDER",
+        "InvocationTimeLimitSeconds": "8",
+        "LambdaInvocationAttributes": {},
+        "ResponseValidation": {
+          "ResponseType": "JSON"
+        }
+      },
+      "Transitions": {
+        "NextAction": "check-results",
+        "Errors": [
+          {
+            "NextAction": "lambda-error",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "check-results",
+      "Type": "CheckAttribute",
+      "Parameters": {
+        "Attribute": "top3",
+        "ComparisonValue": "null"
+      },
+      "Transitions": {
+        "NextAction": "speak-results",
+        "Conditions": [
+          {
+            "NextAction": "no-results",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": ["null"]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "NextAction": "error-handler",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "speak-results",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Here are your top 3 vanity phone numbers: First option: $.External.top3[0]. Second option: $.External.top3[1]. Third option: $.External.top3[2]. Thank you for calling!"
+      },
+      "Transitions": {
+        "NextAction": "end-flow",
+        "Errors": [
+          {
+            "NextAction": "error-handler",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "no-results",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "I'm sorry, I wasn't able to generate vanity numbers for your phone number at this time. Please try again later."
+      },
+      "Transitions": {
+        "NextAction": "end-flow",
+        "Errors": [
+          {
+            "NextAction": "error-handler",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "lambda-error",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "I'm experiencing technical difficulties generating your vanity numbers. Please try again in a few minutes."
+      },
+      "Transitions": {
+        "NextAction": "end-flow",
+        "Errors": [
+          {
+            "NextAction": "error-handler",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "error-handler",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "I'm sorry, something went wrong. Please call back later. Goodbye."
+      },
+      "Transitions": {
+        "NextAction": "end-flow"
+      }
+    },
+    {
+      "Identifier": "end-flow",
+      "Type": "DisconnectParticipant",
+      "Parameters": {}
+    }
+  ]
+}
