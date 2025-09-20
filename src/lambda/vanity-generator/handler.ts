@@ -18,12 +18,22 @@ const tableName = process.env.VANITY_TABLE_NAME!;
 const logger = new Logger({ serviceName: 'vanity-generator' });
 
 export const handler = async (event: any, context: Context) => {
-    logger.info('Processing vanity number request');
+    logger.info('Processing vanity number request', {
+        eventStructure: JSON.stringify(event, null, 2)
+    });
 
     try {
         const rawPhoneNumber =
             event.Details?.ContactData?.CustomerEndpoint?.Address ||
             event.Details?.ContactData?.SystemEndpoint?.Address || '';
+
+        logger.info('Phone number extraction attempt', {
+            hasDetails: !!event.Details,
+            hasContactData: !!event.Details?.ContactData,
+            hasCustomerEndpoint: !!event.Details?.ContactData?.CustomerEndpoint,
+            hasSystemEndpoint: !!event.Details?.ContactData?.SystemEndpoint,
+            rawPhoneNumber: rawPhoneNumber ? 'found' : 'not found'
+        });
 
         if (!rawPhoneNumber) {
             throw new Error('No phone number found in Connect event');
