@@ -58,6 +58,7 @@ export const handler = async (event: any, context: Context) => {
 
             const top3 = existingRecord.top3;
             return {
+                success: "true",
                 top3_0: top3[0],
                 top3_1: top3[1],
                 top3_2: top3[2],
@@ -79,6 +80,7 @@ export const handler = async (event: any, context: Context) => {
         });
 
         return {
+            success: "true",
             top3_0: top3[0],
             top3_1: top3[1],
             top3_2: top3[2],
