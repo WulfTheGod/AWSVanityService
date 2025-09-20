@@ -80,6 +80,11 @@ This project has been a deep dive into production-ready serverless development. 
 - **Incremental Improvement**: GPT feedback showed how to evolve from working code to production-ready
 - **User Experience Focus**: Considered both developer experience and end-user voice interaction
 
+### Connect Integration Lessons
+- **Response Format Critical**: Connect requires STRING_MAP - all values must be strings (no arrays/booleans)
+- **Manual Setup Required**: Lambda must be explicitly added to Connect instance (not automatic via permissions)
+- **Voice Quality**: SSML formatting essential for natural phone number playback
+
 ## 🔐 Security & IAM Decisions
 
 ### Demo Configuration
@@ -160,10 +165,9 @@ git push origin main
 
 #### 2. Set Up Amazon Connect (Manual)
 1. **Create Connect Instance** in AWS Console
-2. **Add Lambda access** to `vanity-generator` in Connect console
-3. **Copy instance ARN** and add to GitHub variables as `CONNECT_INSTANCE_ARN`
-4. **Push to trigger CDK flow deployment** (automatic)
-5. **Claim toll-free number** and associate with deployed flow
+2. **Add Lambda Function** to Connect (Critical: Go to Flows → AWS Lambda → Add `vanity-generator`)
+3. **Create Contact Flow** manually in Connect designer (see deployment guide for details)
+4. **Claim toll-free number** and associate with your manually created flow
 
 *Detailed instructions in [Deployment Guide](./docs/deployment-guide.md)*
 
