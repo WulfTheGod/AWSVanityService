@@ -120,7 +120,7 @@ jobs:
 
       - name: Deploy core infrastructure
         run: |
-          npx cdk deploy --require-approval never --progress events --verbose
+          npx cdk deploy --require-approval never --progress events
         env:
           # Explicitly unset Connect ARN for core deploy
           CONNECT_INSTANCE_ARN: ""
@@ -129,7 +129,7 @@ jobs:
         if: steps.validate-arn.outputs.valid == 'true'
         run: |
           echo "🔄 Deploying Connect contact flow..."
-          npx cdk deploy --require-approval never --progress events --verbose
+          npx cdk deploy --require-approval never --progress events
         env:
           CONNECT_INSTANCE_ARN: ${{ vars.CONNECT_INSTANCE_ARN }}
 
