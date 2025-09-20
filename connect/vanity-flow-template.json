@@ -1,0 +1,156 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "welcome-message",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 38.4,
+      "y": 14.4
+    },
+    "ActionMetadata": {
+      "welcome-message": {
+        "position": {
+          "x": 192.8,
+          "y": 48.8
+        }
+      },
+      "invoke-vanity-lambda": {
+        "position": {
+          "x": 149.6,
+          "y": 244.8
+        },
+        "parameters": {
+          "LambdaFunctionARN": {
+            "displayName": "LAMBDA_ARN_PLACEHOLDER"
+          }
+        },
+        "dynamicMetadata": {}
+      },
+      "check-lambda-response": {
+        "position": {
+          "x": 440.8,
+          "y": 120.8
+        },
+        "conditions": [],
+        "conditionMetadata": [
+          {
+            "id": "success-condition",
+            "operator": {
+              "name": "IsSet",
+              "value": "IsSet",
+              "shortDisplay": "Is Set"
+            },
+            "value": "$.External.top3"
+          }
+        ]
+      },
+      "speak-vanity-results": {
+        "position": {
+          "x": 930.4,
+          "y": 360.8
+        }
+      },
+      "speak-error-message": {
+        "position": {
+          "x": 926.4,
+          "y": 565.6
+        }
+      },
+      "disconnect-call": {
+        "position": {
+          "x": 1725.6,
+          "y": 448
+        }
+      }
+    },
+    "Annotations": [],
+    "name": "Vanity Number Generator Flow",
+    "description": "Generates and speaks vanity phone numbers using AWS Lambda and DynamoDB",
+    "type": "contactFlow",
+    "status": "PUBLISHED",
+    "hash": {}
+  },
+  "Actions": [
+    {
+      "Parameters": {
+        "Text": "Hello! I'll generate vanity phone numbers for you. Please wait while I process your number."
+      },
+      "Identifier": "welcome-message",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "invoke-vanity-lambda"
+      }
+    },
+    {
+      "Parameters": {
+        "LambdaFunctionARN": "LAMBDA_ARN_PLACEHOLDER",
+        "InvocationTimeLimitSeconds": "8",
+        "InvocationType": "SYNCHRONOUS",
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        }
+      },
+      "Identifier": "invoke-vanity-lambda",
+      "Type": "InvokeLambdaFunction",
+      "Transitions": {
+        "NextAction": "check-lambda-response",
+        "Errors": [
+          {
+            "NextAction": "speak-error-message",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "ComparisonValue": "$.External.top3"
+      },
+      "Identifier": "check-lambda-response",
+      "Type": "Compare",
+      "Transitions": {
+        "NextAction": "speak-vanity-results",
+        "Conditions": [
+          {
+            "NextAction": "speak-vanity-results",
+            "Condition": {
+              "Operator": "IsSet",
+              "Operands": []
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "NextAction": "speak-error-message",
+            "ErrorType": "NoMatchingCondition"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "Text": "Your vanity numbers are: $.External.top3[0], $.External.top3[1], and $.External.top3[2]. Thank you for calling!"
+      },
+      "Identifier": "speak-vanity-results",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "disconnect-call"
+      }
+    },
+    {
+      "Parameters": {
+        "Text": "I'm sorry, something went wrong while generating your vanity numbers. Please call back later."
+      },
+      "Identifier": "speak-error-message",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "disconnect-call"
+      }
+    },
+    {
+      "Parameters": {},
+      "Identifier": "disconnect-call",
+      "Type": "DisconnectParticipant",
+      "Transitions": {}
+    }
+  ]
+}

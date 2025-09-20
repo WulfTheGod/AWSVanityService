@@ -92,46 +92,10 @@ jobs:
           aws-region: us-east-1
           role-session-name: GitHubActions-CDKDeploy
 
-      - name: Validate Connect ARN and Flow
-        id: validate-arn
+      - name: Deploy infrastructure
         run: |
-          if [[ -n "${{ vars.CONNECT_INSTANCE_ARN }}" ]]; then
-            if [[ "${{ vars.CONNECT_INSTANCE_ARN }}" =~ ^arn:aws:connect:[a-z0-9-]+:[0-9]{12}:instance/[a-z0-9-]+$ ]]; then
-              echo "✅ Valid Connect ARN format"
-
-              # Check if flow.json contains correct FunctionArn format
-              if grep -q '"FunctionArn": "LAMBDA_ARN_PLACEHOLDER"' connect/flow.json; then
-                echo "✅ Flow JSON uses correct FunctionArn format"
-                echo "valid=true" >> $GITHUB_OUTPUT
-              else
-                echo "❌ Flow JSON missing correct FunctionArn format"
-                echo "Skipping flow deploy: invalid flow.json structure"
-                echo "valid=false" >> $GITHUB_OUTPUT
-              fi
-            else
-              echo "❌ Invalid Connect ARN format: ${{ vars.CONNECT_INSTANCE_ARN }}"
-              echo "Expected format: arn:aws:connect:REGION:ACCOUNT:instance/INSTANCE-ID"
-              echo "valid=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "ℹ️ No Connect ARN provided - will deploy core infrastructure only"
-            echo "valid=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Deploy core infrastructure
-        run: |
+          echo "🚀 Deploying AWS infrastructure..."
           npx cdk deploy --require-approval never --progress events
-        env:
-          # Explicitly unset Connect ARN for core deploy
-          CONNECT_INSTANCE_ARN: ""
-
-      - name: Deploy Connect flow
-        if: steps.validate-arn.outputs.valid == 'true'
-        run: |
-          echo "🔄 Deploying Connect contact flow..."
-          npx cdk deploy --require-approval never --progress events
-        env:
-          CONNECT_INSTANCE_ARN: ${{ vars.CONNECT_INSTANCE_ARN }}
 
       - name: Upload CDK artifacts on failure
         if: failure()
