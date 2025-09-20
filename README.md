@@ -29,6 +29,9 @@ This project demonstrates a production-ready serverless application that:
 - **DynamoDB**: Stores the best vanity numbers for quick retrieval
 - **AWS CDK**: Infrastructure as Code for reproducible deployments
 
+### Connect Flow Example
+![Connect Flow Example](./docs/exampleflow.png)
+
 ## ✅ Current Implementation Status
 
 ### Completed Features
