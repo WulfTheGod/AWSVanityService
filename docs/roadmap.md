@@ -6,8 +6,8 @@
 - ✅ Lambda converts phone numbers to vanity numbers
 - ✅ **Save the BEST 5 vanity numbers** to DynamoDB table
 - ✅ **Return TOP 3 vanity numbers** for Connect integration
-- 🔄 Connect contact flow **says the TOP 3** vanity possibilities
-- 🔄 Live Amazon Connect phone number for testing
+- ✅ Connect contact flow **says the TOP 3** vanity possibilities (CDK-deployed)
+- 🔄 Live Amazon Connect phone number for testing (manual setup required)
 - ✅ Git repo with all code and documentation
 
 ## Phase 1: Core Lambda Implementation ✅
@@ -46,6 +46,7 @@
 - ✅ Fix AWS SDK v3 bundling for runtime compatibility
 - ✅ Add Connect IAM permissions for Lambda invocation
 - ✅ Configure CDK to deploy contact flow when CONNECT_INSTANCE_ARN is set
+- ✅ Dynamic Lambda ARN injection into Connect flow template
 - [ ] Deploy to AWS and test deployed functions meet 5-store/3-return requirement
 
 ### Data Validation
@@ -54,12 +55,13 @@
 - ✅ Add comprehensive error handling for generation and storage failures
 - [ ] End-to-end testing with deployed infrastructure
 
-### CI/CD Pipeline
+### CI/CD Pipeline ✅
 - ✅ GitHub Actions workflow for automated testing and deployment
+- ✅ OIDC federation for secure AWS authentication (no stored credentials)
 - ✅ Automatic Jest test execution on pull requests
 - ✅ Automated CDK deployment on main branch push
-- ✅ Support for Connect instance ID via GitHub secrets
-- ✅ Production-ready deployment pipeline
+- ✅ Support for Connect instance ARN via GitHub repository variables
+- ✅ Production-ready deployment pipeline with proper security
 
 ## Phase 3: Amazon Connect Integration
 
@@ -85,13 +87,15 @@
 - [ ] Test multiple calls to same number (retrieval vs generation)
 - [ ] Confirm scoring algorithm produces meaningful results
 
-### Documentation & Demo
-- [ ] Update development journal with implementation details
-- [ ] Document scoring algorithm and AI word selection process
+### Documentation & Demo ✅
+- ✅ Update development journal with implementation details
+- ✅ Document scoring algorithm and word selection process
+- ✅ Create comprehensive deployment guide with OIDC setup
+- ✅ Document security decisions and trade-offs (demo vs production)
+- ✅ Document fallback strategy implementation
+- ✅ **Calculate and document AWS cost estimation** for the demo
 - [ ] **Record demo video calling toll-free number**
 - [ ] Update README with live phone number for testing
-- [ ] Document fallback strategy implementation
-- [ ] **Calculate and document AWS cost estimation** for the demo
 
 ### Final Testing Checklist
 - [ ] Call toll-free number and verify 3 vanity numbers spoken
