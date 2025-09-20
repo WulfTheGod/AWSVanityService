@@ -38,7 +38,7 @@ This project demonstrates a production-ready serverless application that:
 
 ### Completed Features
 - **✅ Phone Number Processing**: Robust cleaning and validation with E.164 support
-- **✅ Vanity Generation Algorithm**: 13,248-word English dictionary with optimized scoring
+- **✅ Vanity Generation Algorithm**: 13,248-word English dictionary with AI-assisted optimized scoring
 - **✅ Production Enhancements**: PII masking, error handling, input validation
 - **✅ Real Randomness**: Deduplication and Math.random() for fallback cases
 - **✅ TypeScript Safety**: Full type definitions and compilation validation
