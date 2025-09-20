@@ -57,11 +57,9 @@ This service uses a simple, serverless architecture on AWS to convert phone numb
 - **Trade-off**: GitHub dependency vs self-hosted CI/CD
 
 ### 7. Connect Integration Strategy
-- **Choice**: Manual setup - Connect's complexity prevents reliable automation
-- **Why**: CDK flow deployment proved unreliable due to schema mismatches and UUID requirements
-- **Implementation**:
-  - Manual: Create instance, add Lambda, build flow in designer, claim number
-  - Automated: Lambda and DynamoDB infrastructure via CDK
+- **Choice**: Hybrid approach - CDK for infrastructure, manual for Connect setup
+- **Why**: Connect flow automation via CDK proved unreliable (schema mismatches, UUID requirements)
+- **Implementation**: Manual instance + flow creation, automated Lambda/DynamoDB via CDK
 - **Trade-off**: Manual steps required but ensures reliable deployment
 
 ## Security

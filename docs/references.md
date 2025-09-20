@@ -1,13 +1,11 @@
 # References & Resources
 
-## AWS Documentation Used So Far
+## AWS Documentation
 
-### Project Setup
-- [AWS CDK Getting Started](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html) - Initial CDK setup and project structure
-
-### Understanding the Assignment
-- [Amazon Connect Admin Guide](https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html) - Understanding what Connect does
-- [Lambda Documentation](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) - Basic Lambda concepts
+### Core Services
+- [AWS CDK Getting Started](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html) - CDK setup and project structure
+- [Lambda Documentation](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) - Lambda concepts and best practices
+- [Amazon Connect Admin Guide](https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html) - Connect service overview
 
 ### Lambda Implementation
 - [Lambda Handler in Node.js](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html) - Handler function signature and event processing

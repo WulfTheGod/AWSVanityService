@@ -111,11 +111,11 @@
 - 🗣️ Speaks exactly 3 vanity numbers back to caller
 - 📚 Complete Git repo with documentation
 
-**Demo Script**
-1. "Call [your toll-free number]"
-2. "System generates vanity numbers from your caller ID"
-3. "Hear the top 3 options spoken back"
-4. "Check DynamoDB to see all 5 stored results"
+**Demo Flow**
+1. Call 1-833-866-4320
+2. System generates vanity numbers from caller ID
+3. Hear top 3 options spoken back
+4. Check DynamoDB to see all 5 stored results
 
 ## Critical Success Factors
 

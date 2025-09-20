@@ -18,6 +18,7 @@ This project demonstrates a production-ready serverless application that:
 |----------|---------|
 | [Development Journal](./docs/development-journal.md) | Daily progress, challenges faced, and solutions implemented |
 | [Architecture Decisions](./docs/architecture.md) | Technical choices and trade-offs explained |
+| [Deployment Guide](./docs/deployment-guide.md) | Step-by-step setup and deployment instructions |
 | [Project Roadmap](./docs/roadmap.md) | Implementation phases and requirements checklist |
 | [References & Resources](./docs/references.md) | AWS documentation, tutorials, and resources used |
 
@@ -34,30 +35,22 @@ This project demonstrates a production-ready serverless application that:
 ### Connect Flow Example
 ![Connect Flow Example](./docs/exampleflow.png)
 
-## ✅ Current Implementation Status
+## ✅ Implementation Status
 
-### Completed Features
-- **✅ Phone Number Processing**: Robust cleaning and validation with E.164 support
-- **✅ Vanity Generation Algorithm**: 13,248-word English dictionary with AI-assisted optimized scoring
-- **✅ Production Enhancements**: PII masking, error handling, input validation
-- **✅ Real Randomness**: Deduplication and Math.random() for fallback cases
-- **✅ TypeScript Safety**: Full type definitions and compilation validation
-- **✅ Interactive Testing**: Comprehensive test suite with 90%+ success rate
+**Core Features Completed:**
+- **Phone Number Processing**: E.164 format support with robust validation
+- **Vanity Generation**: 13,248-word English dictionary with AI-assisted optimization
+- **High Success Rate**: 90%+ word matches (Example: 555-225-5463 → "555-CALL-463")
+- **Production Ready**: PII masking, error handling, comprehensive testing
+- **Full TypeScript**: Type safety throughout with modular architecture
 
-### Algorithm Performance
-- **Success Rate**: 90%+ word match success (vs <1% with business-only dictionary)
-- **Example Results**: 555-225-5463 → "555-CALL-463"
-- **Fallback Strategy**: Random letter combinations when no words found
-- **Sorting**: Score desc → Length desc → Position asc (prioritizes memorable words)
+**Infrastructure Deployed:**
+- **AWS Lambda**: ARM64 architecture with optimized performance
+- **DynamoDB**: Caching with 30-day TTL and encryption
+- **Amazon Connect**: Live toll-free number with voice integration
+- **CI/CD Pipeline**: Automated testing and deployment via GitHub Actions
 
-*See [Development Journal](./docs/development-journal.md) for detailed implementation decisions and challenges.*
-
-### Next Steps
-- DynamoDB table design and CDK infrastructure
-- Lambda-to-DynamoDB integration
-- Amazon Connect contact flow setup
-
-*Full roadmap available in [Project Roadmap](./docs/roadmap.md).*
+*See [Development Journal](./docs/development-journal.md) for implementation details and [Project Roadmap](./docs/roadmap.md) for completion tracking.*
 
 ## 📖 What I've Learned
 
@@ -88,59 +81,6 @@ This project has been a deep dive into production-ready serverless development. 
 - **Response Format Critical**: Connect requires STRING_MAP - all values must be strings (no arrays/booleans)
 - **Manual Setup Required**: Lambda must be explicitly added to Connect instance (not automatic via permissions)
 - **Voice Quality**: SSML formatting essential for natural phone number playback
-
-## 🔐 Security & IAM Decisions
-
-### Demo Configuration
-For this demo project, we made specific security trade-offs to prioritize development speed and simplicity:
-
-**GitHub OIDC Federation:**
-- Replaced static AWS access keys with GitHub OIDC identity provider
-- IAM role assumes GitHub Actions identity with repository-specific trust conditions
-- No long-lived credentials stored in GitHub secrets
-
-**IAM Permissions:**
-- **Demo Choice**: Used `AdministratorAccess` policy for simplicity
-- **Reasoning**: Ensures CDK can deploy all required AWS services without debugging least-privilege permissions
-- **Trade-off**: Broader permissions than necessary for faster development iteration
-
-### What We Would Do Differently in Production
-
-**Least-Privilege IAM Policy:**
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "cloudformation:*",
-        "lambda:*",
-        "dynamodb:*",
-        "connect:*",
-        "iam:PassRole",
-        "iam:CreateRole",
-        "iam:AttachRolePolicy",
-        "logs:*"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-```
-
-**Additional Production Security:**
-- Separate AWS accounts for dev/staging/production
-- Resource-level permissions with specific ARN restrictions
-- AWS Config and CloudTrail for compliance monitoring
-- Secrets Manager for any application secrets
-- VPC endpoints for private service communication
-
-*This demonstrates understanding of security best practices while acknowledging demo constraints.*
-
-*Detailed challenges and solutions documented in [Development Journal](./docs/development-journal.md).*
-*Architecture decisions explained in [Architecture Decisions](./docs/architecture.md).*
-*Resources and references in [References & Resources](./docs/references.md).*
 
 ## 🚀 Getting Started
 
@@ -186,61 +126,31 @@ aws lambda invoke \
 # Or call the live demo toll-free number: 1-833-866-4320
 ```
 
-### Current Implementation Status
+## 🔐 Security Approach
 
-**✅ Completed Infrastructure:**
-- **Modular Lambda Function**: Clean separation of concerns with individual TypeScript modules
-- **DynamoDB Table**: Optimized caching with 30-day TTL and proper encryption
-- **CDK Stack**: ARM64, structured logging, log retention, and cost-optimized configuration
-- **Algorithm**: 90%+ success rate with 13,248-word English dictionary
-- **TypeScript Testing**: Comprehensive Jest test suite with proper type checking
+**Demo Configuration:**
+- **GitHub OIDC**: Replaced static credentials with temporary role assumption
+- **IAM Strategy**: Used `AdministratorAccess` for rapid development (production would use least-privilege)
+- **Data Protection**: PII masking in logs, DynamoDB encryption at rest
 
-**📋 Implementation Highlights:**
-- **Modular Architecture**: Each function has its own file for maintainability and testing
-- **Type Safety**: Single types.ts file with all interfaces and constants
-- **Caching Strategy**: Stores exactly 5 vanity numbers, returns top 3 for Connect
-- **Production Features**: PII masking, comprehensive error handling, structured logging
-- **Testing**: Jest-based TypeScript tests with coverage reporting
-- **Performance**: ARM64 architecture, optimized bundle, 30-second timeout
-- **Integration Ready**: CloudFormation outputs configured for Amazon Connect
+**Production Recommendations:**
+- Least-privilege IAM policies scoped to specific resources
+- Separate AWS accounts for different environments
+- AWS Config and CloudTrail for compliance monitoring
 
-**🏗️ Project Structure:**
+*Security decisions and production alternatives detailed in [Architecture Decisions](./docs/architecture.md).*
+
+## 📋 Project Structure
+
 ```
-├── bin/
-│   └── app.ts                   # CDK app entry point
-├── lib/
-│   └── aws-vanity-service-stack.ts  # CDK infrastructure definition
-├── src/
-│   ├── data/
-│   │   └── english-words.json   # 13,248 optimized English words
-│   └── lambda/
-│       └── vanity-generator/
-│           ├── handler.ts       # Main Lambda handler
-│           ├── types.ts         # TypeScript interfaces and constants
-│           ├── clean-phone.ts   # Phone number cleaning
-│           ├── mask-phone.ts    # Phone number masking for logs
-│           ├── find-words.ts    # Word matching algorithm
-│           ├── format-vanity.ts # Vanity number formatting
-│           ├── random-letters.ts # Random letter generation
-│           ├── generate-vanity.ts # Main vanity generation logic
-│           ├── get-data.ts      # DynamoDB data retrieval
-│           └── save-data.ts     # DynamoDB data storage
-├── tests/
-│   ├── phone-cleaning.test.ts   # TypeScript Jest tests for input validation
-│   ├── keypad-mapping.test.ts   # TypeScript Jest tests for T9 mapping
-│   └── vanity-generation.test.ts # TypeScript Jest tests for algorithm
-├── scripts/
-│   └── generate-english-dictionary.ts # Dictionary generation tool
-├── connect/
-│   └── flow.json               # Amazon Connect contact flow configuration
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # GitHub Actions CI/CD pipeline
-├── jest.config.js              # Jest testing configuration
-└── docs/                       # Comprehensive documentation
+├── src/lambda/vanity-generator/  # Modular TypeScript Lambda
+│   ├── handler.ts               # Main entry point
+│   ├── types.ts                 # Centralized type definitions
+│   └── [8 other modules]        # Clean separation of concerns
+├── tests/                       # Jest TypeScript test suite
+├── scripts/                     # Dictionary generation utilities
+├── docs/                        # Comprehensive documentation
+└── .github/workflows/           # CI/CD automation
 ```
 
-**🔄 Next Phase:**
-- Create Amazon Connect instance and claim toll-free number
-- Deploy contact flow via CDK with instance ID
-- End-to-end demo validation
+*Full project structure and architectural decisions in [Architecture Decisions](./docs/architecture.md).*

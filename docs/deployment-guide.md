@@ -123,16 +123,15 @@ cdk destroy
 npx cdk bootstrap aws://ACCOUNT_ID/REGION
 ```
 
-## Cost Information
+## 💰 Cost Information
 
-**Detailed Cost Breakdown:**
-- **Lambda**: Free tier (1M requests/month), then $0.0000002 per request
-- **DynamoDB**: Free tier (25 GB storage), then $0.25/GB/month
-- **CloudWatch**: Free tier (5 GB logs), then $0.50/GB/month
-- **Amazon Connect**: ~$0.06/day for toll-free number + $0.022/minute for usage
-- **Total Demo Cost**: $2-5/month depending on usage
+**Monthly Demo Costs:**
+- **Amazon Connect**: ~$2/month (toll-free number + minimal usage)
+- **Lambda + DynamoDB**: Usually free tier
+- **CloudWatch**: Usually free tier
+- **Total**: $2-5/month
 
-**Important**: Toll-free numbers incur daily charges even when not used. DynamoDB and Lambda may exceed free tier if heavily used during development.
+⚠️ **Important**: Toll-free numbers charge daily even when unused.
 
 ## Cleanup Instructions
 
