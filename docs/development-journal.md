@@ -213,6 +213,19 @@
 - **Rationale:** AWS Lambda runtime includes AWS SDK, bundling our own creates conflicts and increases size
 - **Result:** Smaller deployment bundle, faster cold starts, no version conflicts with runtime
 
+**Connect Flow JSON Fixes:**
+**Problem:** Rolling deployment failures due to invalid Connect flow JSON causing CloudFormation rollbacks
+**Root Cause:** Three specific formatting issues in flow.json:
+1. Wrong parameter name: `LambdaFunctionARN` → should be `FunctionArn`
+2. Wrong data type: `"InvocationTimeLimitSeconds": "8"` → should be number `8`
+3. Unsupported fields: `LambdaInvocationAttributes` and `ResponseValidation` not valid in flow JSON
+
+**Solution Implemented:**
+- Fixed all three JSON formatting issues for Connect compatibility
+- Added pre-deployment validation to check flow.json structure
+- Enhanced CI/CD guard logic to skip flow deploy if validation fails
+- **Result:** Prevents CloudFormation rollback loops, core infrastructure protected
+
 **DynamoDB Infrastructure Implementation (Completed)**
 - Successfully designed and implemented DynamoDB table with proper schema
 - Added comprehensive caching strategy: check existing records before generation

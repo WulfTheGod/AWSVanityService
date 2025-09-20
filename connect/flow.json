@@ -22,12 +22,8 @@
       "Identifier": "invoke-lambda",
       "Type": "InvokeLambdaFunction",
       "Parameters": {
-        "LambdaFunctionARN": "LAMBDA_ARN_PLACEHOLDER",
-        "InvocationTimeLimitSeconds": "8",
-        "LambdaInvocationAttributes": {},
-        "ResponseValidation": {
-          "ResponseType": "JSON"
-        }
+        "FunctionArn": "LAMBDA_ARN_PLACEHOLDER",
+        "InvocationTimeLimitSeconds": 8
       },
       "Transitions": {
         "NextAction": "check-results",

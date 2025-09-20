@@ -92,13 +92,22 @@ jobs:
           aws-region: us-east-1
           role-session-name: GitHubActions-CDKDeploy
 
-      - name: Validate Connect ARN
+      - name: Validate Connect ARN and Flow
         id: validate-arn
         run: |
           if [[ -n "${{ vars.CONNECT_INSTANCE_ARN }}" ]]; then
             if [[ "${{ vars.CONNECT_INSTANCE_ARN }}" =~ ^arn:aws:connect:[a-z0-9-]+:[0-9]{12}:instance/[a-z0-9-]+$ ]]; then
               echo "✅ Valid Connect ARN format"
-              echo "valid=true" >> $GITHUB_OUTPUT
+
+              # Check if flow.json contains correct FunctionArn format
+              if grep -q '"FunctionArn": "LAMBDA_ARN_PLACEHOLDER"' connect/flow.json; then
+                echo "✅ Flow JSON uses correct FunctionArn format"
+                echo "valid=true" >> $GITHUB_OUTPUT
+              else
+                echo "❌ Flow JSON missing correct FunctionArn format"
+                echo "Skipping flow deploy: invalid flow.json structure"
+                echo "valid=false" >> $GITHUB_OUTPUT
+              fi
             else
               echo "❌ Invalid Connect ARN format: ${{ vars.CONNECT_INSTANCE_ARN }}"
               echo "Expected format: arn:aws:connect:REGION:ACCOUNT:instance/INSTANCE-ID"
