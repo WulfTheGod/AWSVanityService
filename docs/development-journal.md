@@ -187,6 +187,32 @@
 - Verified repository variables properly configured for automated deployment
 - Enhanced security audit to ensure no credentials exposed in code or commits
 
+**Critical Bug Discovery & Resolution:**
+**Problem:** Jest tests hanging indefinitely, blocking entire CI/CD pipeline
+**Root Cause Analysis:** Systematic debugging revealed infinite loop in `random-letters.ts`
+- Phone numbers containing digits 0 or 1 (e.g., "5551111111") caused infinite loops
+- `KEYPAD_MAP['0']` and `KEYPAD_MAP['1']` return undefined (no letters on these keys)
+- Function returned digit itself, creating identical combinations repeatedly
+- Set deduplication prevented `combinations.size` from growing → infinite `while` loop
+
+**Solution Implemented:**
+- Added `maxAttempts` counter (count * 10) to prevent infinite loops
+- Handle undefined/empty letter options with fallback to random valid letters
+- Maintain proper randomness while ensuring guaranteed loop termination
+- **Result:** Jest now completes successfully (29 tests in 5.4 seconds)
+
+**Investigation Process:**
+1. Isolated hanging to specific test file (`vanity-generation.test.ts`)
+2. Created minimal reproduction test case with problematic phone numbers
+3. Identified exact function and logic causing infinite loop
+4. Implemented targeted fix with proper safeguards
+5. Verified solution works across all test scenarios
+
+**Bundle Size Optimization:**
+- Moved AWS SDK dependencies to devDependencies (client-dynamodb, lib-dynamodb)
+- **Rationale:** AWS Lambda runtime includes AWS SDK, bundling our own creates conflicts and increases size
+- **Result:** Smaller deployment bundle, faster cold starts, no version conflicts with runtime
+
 **DynamoDB Infrastructure Implementation (Completed)**
 - Successfully designed and implemented DynamoDB table with proper schema
 - Added comprehensive caching strategy: check existing records before generation
