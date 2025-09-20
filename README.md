@@ -80,6 +80,55 @@ This project has been a deep dive into production-ready serverless development. 
 - **Incremental Improvement**: GPT feedback showed how to evolve from working code to production-ready
 - **User Experience Focus**: Considered both developer experience and end-user voice interaction
 
+## 🔐 Security & IAM Decisions
+
+### Demo Configuration
+For this demo project, we made specific security trade-offs to prioritize development speed and simplicity:
+
+**GitHub OIDC Federation:**
+- Replaced static AWS access keys with GitHub OIDC identity provider
+- IAM role assumes GitHub Actions identity with repository-specific trust conditions
+- No long-lived credentials stored in GitHub secrets
+
+**IAM Permissions:**
+- **Demo Choice**: Used `AdministratorAccess` policy for simplicity
+- **Reasoning**: Ensures CDK can deploy all required AWS services without debugging least-privilege permissions
+- **Trade-off**: Broader permissions than necessary for faster development iteration
+
+### What We Would Do Differently in Production
+
+**Least-Privilege IAM Policy:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*",
+        "lambda:*",
+        "dynamodb:*",
+        "connect:*",
+        "iam:PassRole",
+        "iam:CreateRole",
+        "iam:AttachRolePolicy",
+        "logs:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+**Additional Production Security:**
+- Separate AWS accounts for dev/staging/production
+- Resource-level permissions with specific ARN restrictions
+- AWS Config and CloudTrail for compliance monitoring
+- Secrets Manager for any application secrets
+- VPC endpoints for private service communication
+
+*This demonstrates understanding of security best practices while acknowledging demo constraints.*
+
 *Detailed challenges and solutions documented in [Development Journal](./docs/development-journal.md).*
 *Architecture decisions explained in [Architecture Decisions](./docs/architecture.md).*
 *Resources and references in [References & Resources](./docs/references.md).*
@@ -87,27 +136,46 @@ This project has been a deep dive into production-ready serverless development. 
 ## 🚀 Getting Started
 
 ### Prerequisites
+- AWS Account with CLI configured
 - Node.js 18+ and npm
-- AWS CLI configured with appropriate credentials
-- CDK CLI installed (`npm install -g aws-cdk`)
+- GitHub account (for automated deployment)
 
-### Installation
+### Quick Setup
+
+#### 1. Deploy Infrastructure (Automated via GitHub Actions)
 ```bash
-# Clone the repository
+# Fork/clone the repository
 git clone https://github.com/WulfTheGod/AWSVanityService.git
 cd AWSVanityService
 
-# Install dependencies
-npm install
+# Set up GitHub OIDC and variables:
+# - Configure AWS OIDC identity provider and IAM role
+# - Go to Settings → Secrets and variables → Actions → Variables
+# - Add AWS_ROLE_ARN, AWS_REGION, CONNECT_INSTANCE_ARN
 
-# Run TypeScript tests with Jest
-npm test
+# Deploy automatically by pushing to main
+git push origin main
+# Monitor deployment in GitHub Actions tab
+```
 
-# Bootstrap CDK (first time only)
-cdk bootstrap
+#### 2. Set Up Amazon Connect (Manual)
+1. **Create Connect Instance** in AWS Console
+2. **Add Lambda access** to `vanity-generator` in Connect console
+3. **Copy instance ARN** and add to GitHub variables as `CONNECT_INSTANCE_ARN`
+4. **Push to trigger CDK flow deployment** (automatic)
+5. **Claim toll-free number** and associate with deployed flow
 
-# Deploy the stack
-cdk deploy
+*Detailed instructions in [Deployment Guide](./docs/deployment-guide.md)*
+
+### Test Your Service
+```bash
+# Test Lambda directly
+aws lambda invoke \
+  --function-name vanity-generator \
+  --payload '{"Details":{"ContactData":{"CustomerEndpoint":{"Address":"+15555551234"}}}}' \
+  response.json
+
+# Or call your toll-free number!
 ```
 
 ### Current Implementation Status
@@ -156,12 +224,15 @@ cdk deploy
 ├── scripts/
 │   └── generate-english-dictionary.js # Dictionary generation tool
 ├── connect/
-│   └── flow.json               # Amazon Connect contact flow (pending)
+│   └── flow.json               # Amazon Connect contact flow configuration
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # GitHub Actions CI/CD pipeline
 ├── jest.config.js              # Jest testing configuration
 └── docs/                       # Comprehensive documentation
 ```
 
 **🔄 Next Phase:**
-- Amazon Connect contact flow configuration
-- Live toll-free number setup and testing
+- Create Amazon Connect instance and claim toll-free number
+- Deploy contact flow via CDK with instance ID
 - End-to-end demo validation
