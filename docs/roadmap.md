@@ -6,8 +6,8 @@
 - ✅ Lambda converts phone numbers to vanity numbers
 - ✅ **Save the BEST 5 vanity numbers** to DynamoDB table
 - ✅ **Return TOP 3 vanity numbers** for Connect integration
-- ✅ Connect contact flow **says the TOP 3** vanity possibilities (CDK-deployed)
-- 🔄 Live Amazon Connect phone number for testing (manual setup required)
+- ✅ Connect contact flow **says the TOP 3** vanity possibilities (manual flow setup)
+- ✅ Live Amazon Connect phone number for testing (manual setup required)
 - ✅ Git repo with all code and documentation
 
 ## Phase 1: Core Lambda Implementation ✅
@@ -45,8 +45,8 @@
 - ✅ Configure Lambda timeout settings (30 seconds, ARM64, structured logging)
 - ✅ Fix AWS SDK v3 bundling for runtime compatibility
 - ✅ Add Connect IAM permissions for Lambda invocation
-- ✅ Configure CDK to deploy contact flow when CONNECT_INSTANCE_ARN is set
-- ✅ Dynamic Lambda ARN injection into Connect flow template
+- ✅ Configure Connect permissions for Lambda invocation
+- ✅ Document manual flow creation process
 - [ ] Deploy to AWS and test deployed functions meet 5-store/3-return requirement
 
 ### Data Validation
