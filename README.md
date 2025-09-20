@@ -2,6 +2,8 @@
 
 A serverless phone number to vanity number conversion service built with AWS Lambda, DynamoDB, and Amazon Connect.
 
+📞 **Try the live demo: 1-833-866-4320**
+
 ## 🎯 Project Goals
 
 This project demonstrates a production-ready serverless application that:
@@ -182,7 +184,7 @@ aws lambda invoke \
   --payload '{"Details":{"ContactData":{"CustomerEndpoint":{"Address":"+15555551234"}}}}' \
   response.json
 
-# Or call your toll-free number!
+# Or call the live demo toll-free number: 1-833-866-4320
 ```
 
 ### Current Implementation Status
