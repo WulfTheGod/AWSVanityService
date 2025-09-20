@@ -23,6 +23,12 @@ export class AwsVanityServiceStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
+    const vanityLogGroup = new logs.LogGroup(this, 'VanityGeneratorLogGroup', {
+      logGroupName: '/aws/lambda/vanity-generator',
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+
     const vanityGeneratorFunction = new nodejs.NodejsFunction(this, 'VanityGeneratorFunction', {
       functionName: 'vanity-generator',
       entry: 'src/lambda/vanity-generator/handler.ts',
@@ -30,7 +36,7 @@ export class AwsVanityServiceStack extends cdk.Stack {
       architecture: lambda.Architecture.ARM_64,
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
-      logRetention: logs.RetentionDays.ONE_WEEK,
+      logGroup: vanityLogGroup,
       environment: {
         VANITY_TABLE_NAME: vanityTable.tableName,
         NODE_ENV: 'production',

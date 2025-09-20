@@ -21,10 +21,22 @@ aws configure
 ```
 
 ### 3. Bootstrap CDK (One-Time Setup)
+
+CDK requires a one-time bootstrap per AWS account/region combination. This creates the necessary S3 buckets and IAM roles for CDK deployments.
+
+**Verify your account and bootstrap:**
 ```bash
+# Verify you're in the correct AWS account
+aws sts get-caller-identity --profile <PROFILE_NAME>
+
+# Install CDK globally
 npm install -g aws-cdk
-cdk bootstrap
+
+# Bootstrap the account/region (only needed once)
+npx cdk bootstrap aws://ACCOUNT_ID/REGION --profile <PROFILE_NAME>
 ```
+
+**Note:** Bootstrap only needs to be done once per account/region, either locally or automatically in CI with the GitHub OIDC role.
 
 ## GitHub OIDC Setup
 
@@ -234,9 +246,10 @@ cdk destroy
 - Verify OIDC trust relationship includes your GitHub repository and branch
 
 **CDK Bootstrap Required**
-If you see "This stack uses assets" error:
+If you see "SSM parameter /cdk-bootstrap/... not found" or "This stack uses assets" error:
 ```bash
-cdk bootstrap aws://YOUR-ACCOUNT-ID/us-east-1
+# Bootstrap is required - run the bootstrap command from section 3 above
+npx cdk bootstrap aws://ACCOUNT_ID/REGION --profile <PROFILE_NAME>
 ```
 
 ## Cost Information

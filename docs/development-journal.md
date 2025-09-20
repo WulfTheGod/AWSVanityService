@@ -168,6 +168,25 @@
 - Confirmed proper formatting and user experience across test cases
 - Algorithm ready for Amazon Connect integration
 
+## Day 2: September 20, 2025
+### Infrastructure and Deployment Fixes
+
+**CDK Deprecation Warning Resolution:**
+- Removed deprecated `logRetention` parameter from Lambda function
+- Created explicit `LogGroup` construct with 1-week retention for cost optimization
+- Fixed deprecation warnings while maintaining proper log management
+
+**Bootstrap Documentation Enhancement:**
+- Added comprehensive CDK bootstrap instructions to deployment guide
+- Explained one-time setup requirement per AWS account/region
+- Added troubleshooting for SSM parameter bootstrap errors
+- Clarified difference between local and CI bootstrap approaches
+
+**Deployment Pipeline Verification:**
+- Confirmed GitHub OIDC authentication working with correct AWS account
+- Verified repository variables properly configured for automated deployment
+- Enhanced security audit to ensure no credentials exposed in code or commits
+
 **DynamoDB Infrastructure Implementation (Completed)**
 - Successfully designed and implemented DynamoDB table with proper schema
 - Added comprehensive caching strategy: check existing records before generation
