@@ -30,20 +30,29 @@
 
 ### Amazon Connect Integration
 - [Create an Amazon Connect Instance](https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html) - Instance setup and configuration
-- [Grant Amazon Connect Access to Lambda](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html) - Lambda integration setup
-- [Amazon Connect Contact Flow Language](https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html) - Contact flow JSON structure
-- [Invoke Lambda Function Block](https://docs.aws.amazon.com/connect/latest/adminguide/invoke-lambda-function-block.html) - Lambda invocation in flows
+- [Grant Amazon Connect Access to Lambda](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html) - Lambda integration setup and manual registration requirements
+- [Amazon Connect Contact Flow Language](https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html) - Contact flow JSON structure (complex UUID requirements)
+- [Invoke Lambda Function Block](https://docs.aws.amazon.com/connect/latest/adminguide/invoke-lambda-function-block.html) - Lambda invocation and STRING_MAP response format
+- [Contact Flow Designer](https://docs.aws.amazon.com/connect/latest/adminguide/contact-flow-designer.html) - Manual flow creation (more reliable than CDK)
+- [SSML in Amazon Connect](https://docs.aws.amazon.com/connect/latest/adminguide/ssml.html) - Speech formatting for natural voice output
+- [Lambda Response Validation](https://docs.aws.amazon.com/connect/latest/adminguide/invoke-lambda-function-block.html#lambda-response) - STRING_MAP format requirements
+- [Contact Attributes](https://docs.aws.amazon.com/connect/latest/adminguide/connect-contact-attributes.html) - How to access Lambda responses in flows
 
 ### CI/CD Pipeline
 - [GitHub Actions for AWS](https://github.com/aws-actions/configure-aws-credentials) - AWS credential configuration
 - [CDK GitHub Actions](https://docs.aws.amazon.com/cdk/v2/guide/cli.html#cli-deploy) - Automated CDK deployment
 - [Jest GitHub Actions](https://jestjs.io/docs/getting-started#using-github-actions) - Automated testing
+- [Jest Configuration](https://jestjs.io/docs/configuration#forceexit-boolean) - Force exit flag to prevent hanging tests
 
 ### Security & OIDC Integration
 - [AWS IAM OIDC Identity Providers](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) - Setting up GitHub OIDC federation
 - [GitHub OIDC with AWS](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) - Configuring GitHub Actions OIDC
-- [CDK Connect CfnContactFlow](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_connect.CfnContactFlow.html) - Contact flow deployment reference
-- [Connect Lambda Functions](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html) - Lambda integration with Amazon Connect
+
+### Troubleshooting Resources Used
+- [CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html) - Lambda debugging via log streams
+- [AWS CLI Logs Commands](https://docs.aws.amazon.com/cli/latest/reference/logs/) - Real-time log monitoring for Connect integration issues
+- [CDK Rollback Troubleshooting](https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html) - Understanding stack rollback behavior
+- [Connect Flow Import Errors](https://docs.aws.amazon.com/connect/latest/adminguide/contact-flow-import-export.html) - Flow JSON compatibility issues
 
 ## Research & Planning
 
