@@ -56,10 +56,12 @@ export const handler = async (event: any, context: Context) => {
                 cachedCount: existingRecord.vanityNumbers?.length || 0
             });
 
+            const top3 = existingRecord.top3;
             return {
-                vanityNumbers: existingRecord.vanityNumbers || [],
-                top3: existingRecord.top3 || [],
-                cached: true
+                top3_0: top3[0],
+                top3_1: top3[1],
+                top3_2: top3[2],
+                cached: "true"
             };
         }
 
@@ -77,9 +79,10 @@ export const handler = async (event: any, context: Context) => {
         });
 
         return {
-            vanityNumbers,
-            top3,
-            cached: false
+            top3_0: top3[0],
+            top3_1: top3[1],
+            top3_2: top3[2],
+            cached: "false"
         };
     } catch (error) {
         logger.error('Failed to process vanity number request', { error });

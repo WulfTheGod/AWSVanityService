@@ -128,7 +128,7 @@
     },
     {
       "Parameters": {
-        "Text": "Your vanity numbers are: $.External.top3[0], $.External.top3[1], and $.External.top3[2]. Thank you for calling!"
+        "Text": "Your vanity numbers are: $.External.top3_0, $.External.top3_1, and $.External.top3_2. Thank you for calling!"
       },
       "Identifier": "7329da0c-3dcb-4661-a72e-95b6e841a4a4",
       "Type": "MessageParticipant",
