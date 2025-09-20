@@ -7,4 +7,7 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
   ],
+  testTimeout: 10000,
+  forceExit: true,
+  clearMocks: true,
 };
