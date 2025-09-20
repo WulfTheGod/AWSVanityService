@@ -3,7 +3,11 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as connect from 'aws-cdk-lib/aws-connect';
 import { Construct } from 'constructs';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class AwsVanityServiceStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -36,6 +40,16 @@ export class AwsVanityServiceStack extends cdk.Stack {
 
     vanityTable.grantReadWriteData(vanityGeneratorFunction);
 
+    const connectInstanceArn = process.env.CONNECT_INSTANCE_ARN;
+
+    if (connectInstanceArn) {
+      vanityGeneratorFunction.addPermission('AllowConnectInvoke', {
+        principal: new iam.ServicePrincipal('connect.amazonaws.com'),
+        action: 'lambda:InvokeFunction',
+        sourceArn: `${connectInstanceArn}/*`,
+      });
+    }
+
     new cdk.CfnOutput(this, 'VanityGeneratorFunctionArn', {
       value: vanityGeneratorFunction.functionArn,
       description: 'ARN of the vanity generator Lambda function for Amazon Connect'
@@ -45,5 +59,37 @@ export class AwsVanityServiceStack extends cdk.Stack {
       value: vanityTable.tableName,
       description: 'Name of the DynamoDB table storing vanity numbers'
     });
+
+    if (connectInstanceArn) {
+      // Read the contact flow content and inject Lambda ARN
+      const contactFlowTemplate = fs.readFileSync(
+        path.join(__dirname, '../connect/flow.json'),
+        'utf8'
+      );
+
+      // Replace placeholder with actual Lambda ARN
+      const contactFlowContent = contactFlowTemplate.replace(
+        'LAMBDA_ARN_PLACEHOLDER',
+        vanityGeneratorFunction.functionArn
+      );
+
+      const vanityContactFlow = new connect.CfnContactFlow(this, 'VanityContactFlow', {
+        instanceArn: connectInstanceArn,
+        name: 'VanityNumberFlow',
+        description: 'Contact flow that generates and speaks vanity numbers',
+        type: 'CONTACT_FLOW',
+        content: contactFlowContent,
+      });
+
+      new cdk.CfnOutput(this, 'ContactFlowArn', {
+        value: vanityContactFlow.attrContactFlowArn,
+        description: 'ARN of the Connect contact flow'
+      });
+    } else {
+      new cdk.CfnOutput(this, 'ConnectSetupRequired', {
+        value: 'Set CONNECT_INSTANCE_ARN environment variable and redeploy to create contact flow',
+        description: 'Instructions for Connect setup'
+      });
+    }
   }
 }
