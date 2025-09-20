@@ -230,7 +230,7 @@ aws lambda invoke \
 │   ├── keypad-mapping.test.ts   # TypeScript Jest tests for T9 mapping
 │   └── vanity-generation.test.ts # TypeScript Jest tests for algorithm
 ├── scripts/
-│   └── generate-english-dictionary.js # Dictionary generation tool
+│   └── generate-english-dictionary.ts # Dictionary generation tool
 ├── connect/
 │   └── flow.json               # Amazon Connect contact flow configuration
 ├── .github/

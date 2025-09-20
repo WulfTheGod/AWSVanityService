@@ -1,8 +1,52 @@
-const fs = require('fs');
-const path = require('path');
-const words = require('an-array-of-english-words');
+import * as fs from 'fs';
+import * as path from 'path';
 
-const KEYPAD_MAP = {
+// Type definitions
+interface WordData {
+    word: string;
+    digits: string;
+    score: number;
+    category: string;
+    length: number;
+}
+
+interface ProcessedWord {
+    digits: string;
+    score: number;
+    category: string;
+    length: number;
+}
+
+interface Dictionary {
+    metadata: {
+        description: string;
+        generation_method: string;
+        focus: string;
+        last_updated: string;
+        total_words: number;
+    };
+    matching_rules: {
+        allow_inside_number: boolean;
+        prefer_trailing_match: boolean;
+        max_words_per_number: number;
+        min_word_length: number;
+        max_word_length: number;
+        skip_digits: string[];
+        boundary_digits: string[];
+    };
+    scoring_weights: {
+        word_score: number;
+        length_bonus: number;
+        position_bonus: number;
+        completeness: number;
+    };
+    words: Record<string, ProcessedWord>;
+}
+
+// Import the word list (requires CommonJS require since it's not typed)
+const words: string[] = require('an-array-of-english-words');
+
+const KEYPAD_MAP: Record<string, string> = {
     'A': '2', 'B': '2', 'C': '2',
     'D': '3', 'E': '3', 'F': '3',
     'G': '4', 'H': '4', 'I': '4',
@@ -13,14 +57,14 @@ const KEYPAD_MAP = {
     'W': '9', 'X': '9', 'Y': '9', 'Z': '9'
 };
 
-function convertWordToDigits(word) {
+function convertWordToDigits(word: string): string {
     return word.toUpperCase()
         .split('')
         .map(letter => KEYPAD_MAP[letter] || '')
         .join('');
 }
 
-function scoreWord(word) {
+function scoreWord(word: string): number {
     let score = 50;
 
     if (word.length === 4) score += 15;
@@ -41,7 +85,7 @@ function scoreWord(word) {
     return Math.max(0, score);
 }
 
-function isValidWord(word) {
+function isValidWord(word: string): boolean {
     if (word.length < 3 || word.length > 7) return false;
     if (!/^[a-zA-Z]+$/.test(word)) return false;
 
@@ -67,7 +111,7 @@ for (const word of testWords) {
     }
 }
 
-const validWords = [];
+const validWords: WordData[] = [];
 let duplicateCount = 0;
 
 for (const word of words) {
@@ -93,10 +137,10 @@ validWords.sort((a, b) => {
 
 const MAX_WORDS = 15000;
 const WORDS_PER_LETTER = Math.floor(MAX_WORDS / 26);
-const processedWords = {};
+const processedWords: Record<string, ProcessedWord> = {};
 let validCount = 0;
 
-const wordsByLetter = {};
+const wordsByLetter: Record<string, WordData[]> = {};
 for (const wordData of validWords) {
     const firstLetter = wordData.word[0];
     if (!wordsByLetter[firstLetter]) wordsByLetter[firstLetter] = [];
@@ -132,7 +176,7 @@ console.log(`✅ Processed ${validCount.toLocaleString()} valid words`);
 console.log(`🔄 Skipped ${duplicateCount.toLocaleString()} duplicates`);
 console.log(`❌ Filtered out ${(words.length - validCount - duplicateCount).toLocaleString()} invalid words`);
 
-const dictionary = {
+const dictionary: Dictionary = {
     metadata: {
         description: "English word dictionary optimized for vanity number generation",
         generation_method: "Generated from an-array-of-english-words package, filtered and pre-computed",
