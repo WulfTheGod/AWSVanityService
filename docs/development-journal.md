@@ -401,3 +401,70 @@
 - Amazon Connect contact flow configuration to complete demo
 - End-to-end testing with live toll-free number
 - Live demonstration of complete working system
+
+### Connect Integration Reality Check (Day 2 Continued)
+
+**Major Discovery: CDK Cannot Automate Connect Flows**
+After extensive debugging, discovered that Amazon Connect flow deployment via CDK has critical limitations:
+- Flow JSON format from Connect export is incompatible with CDK deployment
+- Manual Lambda permission addition in Connect console is REQUIRED
+- Connect flows must be created manually in the visual designer
+
+**Critical Lambda Response Format Issues:**
+**Problem:** Connect was receiving Lambda response but showing "Lambda Function Returned An Error"
+**Root Cause:** Connect's `ResponseValidation.ResponseType = "STRING_MAP"` requires specific format:
+- All values must be strings (no arrays, no booleans)
+- Original response `{top3: ["970-GOAL-226",...], cached: false}` failed
+- Working response: `{top3_0: "970-GOAL-226", top3_1: "...", success: "true"}`
+
+**Solution Implemented:**
+```javascript
+// Before (failed)
+return {
+    top3: existingRecord.top3 || [],
+    cached: true
+};
+
+// After (works)
+return {
+    success: "true",
+    top3_0: top3[0],
+    top3_1: top3[1],
+    top3_2: top3[2],
+    cached: "true"
+};
+```
+
+**Connect Flow Attribute Checking Limitations:**
+- Cannot check if attribute "exists" or "is set"
+- Must check specific values (equals, contains, starts with, etc.)
+- Added `success: "true"` field for reliable condition checking
+
+**Architecture Simplification:**
+- Removed automatic flow deployment from CDK stack
+- Removed Connect flow JSON files (misleading and non-functional)
+- Always add Connect Lambda permissions (not conditional)
+- Simplified CI/CD pipeline - no more Connect ARN validation
+
+**SSML Voice Improvements:**
+Discovered Connect's text-to-speech poorly handles formatted vanity numbers.
+Implemented SSML for natural speech:
+```xml
+<speak>
+Your first option is:
+<break time="300ms"/>
+<say-as interpret-as="telephone">$.External.top3_0</say-as>
+<break time="800ms"/>
+</speak>
+```
+
+**Lessons Learned:**
+1. **Test Integration Points Early**: Lambda worked perfectly standalone but failed with Connect due to response format
+2. **Read the Fine Print**: Connect's STRING_MAP requirement wasn't obvious
+3. **Manual Setup Sometimes Better**: Trying to automate Connect flows caused more problems than it solved
+4. **Voice UX Matters**: Raw phone number strings sound terrible - SSML is essential
+
+**Final Working Architecture:**
+- CDK deploys: Lambda + DynamoDB + IAM permissions
+- Manual setup: Connect instance, Lambda registration, flow design
+- Clear separation of automated vs manual components
