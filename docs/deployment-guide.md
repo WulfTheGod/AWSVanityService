@@ -50,12 +50,14 @@ npx cdk deploy
 
 ## Amazon Connect Setup
 
+> **Automation boundary:** CDK deploys Lambda, DynamoDB, roles, and environment variables. Amazon Connect still needs manual steps: claim a number, attach Lambda to the instance, and select the flow. The flow JSON has UUIDs that break between instances. I document the exact steps so anyone can reproduce them.
+
 ### 1. Create Instance
 Amazon Connect Console → Add instance → Store users in Connect → Create
 
 ### 2. Add Lambda (CRITICAL)
 Your instance → Flows → AWS Lambda → Add `vanity-generator`
-> Without this, calls will fail even if everything else is correct
+> Without this step, calls will fail
 
 ### 3. Build Contact Flow
 Create flow with these blocks:
@@ -71,6 +73,8 @@ Create flow with these blocks:
 Channels → Phone numbers → Claim → Toll free → Associate with flow
 
 ## Testing the Deployed Lambda
+
+> **Note:** The English dictionary JSON is prebuilt and committed. No runtime downloads needed. Production would query DynamoDB instead.
 
 After deployment completes:
 
@@ -99,7 +103,7 @@ aws dynamodb scan --table-name VanityNumbersTable
 
 ## Clean Up Resources
 
-To remove all AWS resources and avoid charges:
+To remove all AWS resources:
 
 ```bash
 cdk destroy
@@ -126,12 +130,12 @@ npx cdk bootstrap aws://ACCOUNT_ID/REGION
 ## 💰 Cost Information
 
 **Monthly Demo Costs:**
-- **Amazon Connect**: ~$2/month (toll-free number + minimal usage)
+- **Amazon Connect**: ~$2/month (toll-free number)
 - **Lambda + DynamoDB**: Usually free tier
 - **CloudWatch**: Usually free tier
 - **Total**: $2-5/month
 
-⚠️ **Important**: Toll-free numbers charge daily even when unused.
+⚠️ **Important**: Toll-free numbers cost money daily even when unused.
 
 ## Cleanup Instructions
 
@@ -153,6 +157,6 @@ npx cdk bootstrap aws://ACCOUNT_ID/REGION
    # Removes Lambda, DynamoDB table (DATA LOST), Contact Flow, IAM roles
    ```
 
-**Important Notes**:
-- CDK destroys the DynamoDB table and **all stored vanity number data will be permanently lost**
-- You must manually release the phone number and delete the Connect instance as CDK cannot automate these cleanup steps
+**Important Notes:**
+- CDK destroys the DynamoDB table. **All data will be lost.**
+- You must manually release the phone number and delete the Connect instance. CDK can't automate these steps.

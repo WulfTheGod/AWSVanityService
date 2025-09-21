@@ -1,75 +1,82 @@
 # Development Journal
 
+## Timeline at a Glance
+
+- **Sept 16–17:** Scoped requirements. Read Amazon Connect + Lambda docs. Drafted architecture and test plan.
+- **Sept 18–20:** Built Lambda + DynamoDB. Created Connect flow. Fixed response format. Made end-to-end calls work.
+- **Sept 21:** Polished docs. Tested calls. Created English dictionary. Added verification steps.
+- **Sept 22 (Mon):** Submission
+
 ## Day 1: September 18, 2025
 ### Focus
 - Set up repo and CDK project structure
 - Planned Lambda + DynamoDB + Connect integration
 
 ### Key Decisions
-- Use AWS CDK with TypeScript for IaC
-- Adopt streamlined single-function approach for Lambda implementation
-- Chose dictionary-based scoring for vanity number generation
+- Use AWS CDK with TypeScript for infrastructure
+- Single Lambda function keeps it simple
+- Dictionary-based scoring for better vanity numbers
 
 ### Challenges
-- Defining "best" vanity number → solution: multi-factor scoring (word quality, length, memorability)
+- Defining "best" vanity number. Solution: score by word quality, length, and memorability.
 
 ### Implementation Progress
 **Phone Number Cleaning (Completed)**
-- Built `cleanPhoneNumber()` function to handle various input formats
+- Built `cleanPhoneNumber()` function for all input formats
 - Supports Amazon Connect E.164 format (+15551234567)
-- Removes non-digits and strips country code automatically
-- Created comprehensive test suite with 8 test cases
-- All tests passing - ready for vanity generation
+- Removes non-digits and strips country code
+- Created test suite with 8 test cases
+- All tests pass
 
 ### Technical Notes
-- Used regex `/[^0-9]/g` to strip non-digits efficiently
-- Handles 11-digit numbers by removing leading '1' country code
-- Test-driven approach ensured edge cases are covered
+- Used regex `/[^0-9]/g` to strip non-digits
+- Handles 11-digit numbers by removing leading '1'
+- Test-driven approach covers edge cases
 
 **Phone Keypad Mapping (Completed)**
-- Implemented standard keypad letter mapping using object lookup pattern
-- Added helper function for digit-to-letter conversion with error handling
-- Comprehensive test suite covers all digits plus edge cases
-- Focus on last 7 digits approach for better vanity number quality
+- Built standard keypad letter mapping with object lookup
+- Added helper function for digit-to-letter conversion
+- Test suite covers all digits and edge cases
+- Focus on last 7 digits for better vanity numbers
 
 ### Testing Approach
-- Test structure and comprehensive case coverage developed with AI assistance
-- All test logic manually reviewed and validated for accuracy
-- Emphasis on edge cases, error handling, and real-world scenarios
+- Test structure developed with AI help
+- All test logic reviewed manually
+- Focus on edge cases and real-world scenarios
 
 **Production Logging Implementation (Completed)**
-- Replaced console.log with AWS Lambda Powertools structured logging
-- Added service name tagging for better CloudWatch organization
-- Structured JSON logs enable better filtering and searching in production
-- Request correlation tracking for debugging individual function calls
+- Replaced console.log with AWS Lambda Powertools
+- Added service name tags for CloudWatch
+- JSON logs make filtering and searching easier
+- Request tracking helps debug specific calls
 
 ### Technical Infrastructure Decisions
 **Why AWS Lambda Powertools Logger:**
-- Industry standard for production Lambda functions
-- Structured JSON output enables better log analysis
-- Built-in request correlation and service tagging
-- Better performance than basic console logging
-- Follows AWS Well-Architected Framework recommendations
+- Industry standard for Lambda functions
+- JSON output for better log analysis
+- Built-in request tracking and service tags
+- Faster than console.log
+- Follows AWS best practices
 
 **Business Word Dictionary (Completed)**
-- Created AI-curated dictionary of business-relevant terms for optimal vanity numbers
-- Focus on last 7 digits strategy for professional appearance (555-CALL-NOW vs JKLCALLNOW)
-- Structured scoring system with categories (action, service, quality, industry)
-- Pre-calculated digit mappings for performance optimization
-- Bundled with Lambda for fast, serverless access
+- Created AI-curated dictionary of business terms
+- Focus on last 7 digits for clean look (555-CALL-NOW)
+- Scoring system with categories (action, service, quality, industry)
+- Pre-calculated digit mappings for speed
+- Bundled with Lambda for fast access
 
 ### Design Decisions
 **Why Last 7 Digits:**
 - Follows industry standard (1-800-FLOWERS pattern)
-- Better visual appearance and memorability
-- More manageable combination space for real-time processing
-- Allows area code to remain as recognizable numbers
+- Looks better and easier to remember
+- Manageable combinations for real-time processing
+- Keeps area code as normal numbers
 
 **Why AI-Generated Dictionary:**
-- Ensures comprehensive coverage of business terminology
-- Optimized for memorability and commercial value
-- Consistent scoring methodology across word categories
-- Faster than manual curation while maintaining quality
+- Covers business terms thoroughly
+- Optimized for memory and commercial value
+- Consistent scoring across categories
+- Faster than manual work, same quality
 
 ### Algorithm Design Challenges
 
@@ -80,15 +87,15 @@
   - Option B: `55GOAL5226` (flexible position, inconsistent formatting)
 
 **Considerations:**
-- **Professional appearance**: Fixed positioning looks cleaner for business use
-- **Marketing value**: Consistent format easier to remember and communicate
-- **Voice clarity**: Connect will speak results - clean format reduces confusion
-- **Match success rate**: Fixed positions may reduce successful word matches
+- **Professional appearance**: Fixed positions look cleaner
+- **Marketing value**: Consistent format is easier to remember
+- **Voice clarity**: Clean format helps when Connect speaks it
+- **Match success rate**: Fixed positions may reduce matches
 
 **Business Impact:**
-- Consistent formatting demonstrates attention to professional requirements
-- Clean presentation shows understanding of real-world vanity number usage
-- Industry standards follow patterns like `1-800-FLOWERS` (area-exchange-WORD)
+- Consistent format shows professional attention
+- Clean look shows I understand real vanity numbers
+- Industry follows patterns like `1-800-FLOWERS`
 
 ### Current Challenge: Dictionary Match Success Rate
 
@@ -193,22 +200,22 @@
 - Set deduplication prevented `combinations.size` from growing → infinite `while` loop
 
 **Solution Implemented:**
-- Added `maxAttempts` counter (count * 10) to prevent infinite loops
-- Handle undefined/empty letter options with fallback to random valid letters
-- Maintain proper randomness while ensuring guaranteed loop termination
-- **Result:** Jest now completes successfully (29 tests in 5.4 seconds)
+- Added `maxAttempts` counter to prevent infinite loops
+- Handle empty letter options with fallback to random letters
+- Keep randomness while ensuring loop ends
+- **Result:** Jest completes (29 tests in 5.4 seconds)
 
 **Investigation Process:**
-1. Isolated hanging to specific test file (`vanity-generation.test.ts`)
-2. Created minimal reproduction test case with problematic phone numbers
-3. Identified exact function and logic causing infinite loop
-4. Implemented targeted fix with proper safeguards
-5. Verified solution works across all test scenarios
+1. Found hanging in `vanity-generation.test.ts`
+2. Created minimal test case with problem numbers
+3. Found the exact function causing infinite loop
+4. Fixed it with safeguards
+5. Verified fix works for all tests
 
 **Bundle Size Optimization:**
-- Moved AWS SDK dependencies to devDependencies (client-dynamodb, lib-dynamodb)
-- **Rationale:** AWS Lambda runtime includes AWS SDK, bundling our own creates conflicts and increases size
-- **Result:** Smaller deployment bundle, faster cold starts, no version conflicts with runtime
+- Moved AWS SDK to devDependencies
+- **Why:** Lambda runtime includes AWS SDK. Bundling our own causes conflicts.
+- **Result:** Smaller bundle, faster cold starts, no conflicts
 
 **Connect Flow JSON Fixes:**
 **Problem:** Rolling deployment failures due to invalid Connect flow JSON causing CloudFormation rollbacks
@@ -224,59 +231,59 @@
 - **Result:** Prevents CloudFormation rollback loops, core infrastructure protected
 
 **DynamoDB Infrastructure Implementation (Completed)**
-- Successfully designed and implemented DynamoDB table with proper schema
-- Added comprehensive caching strategy: check existing records before generation
-- Implemented complete Lambda-to-DynamoDB integration with AWS SDK v3
-- Added proper error handling and structured logging for database operations
-- Configured CloudFormation outputs for Amazon Connect integration
+- Built DynamoDB table with proper schema
+- Added caching: check existing records first
+- Connected Lambda to DynamoDB with AWS SDK v3
+- Added error handling and logging for database operations
+- Set up CloudFormation outputs for Connect
 
 ### CDK Infrastructure Enhancement (Completed)
 **Production-Ready Improvements Applied:**
-- Fixed critical AWS SDK v3 bundling issue that would cause runtime errors
-- Added ARM64 architecture for 20% better performance and cost savings
-- Implemented Lambda Powertools structured logging for comprehensive observability
-- Set log retention to 1 week to prevent CloudWatch cost accumulation
-- Added LOG_LEVEL environment variable for Powertools Logger configuration
-- Removed explicit table naming to avoid deployment conflicts
-- Optimized for demo costs by removing point-in-time recovery
+- Fixed AWS SDK v3 bundling issue
+- Added ARM64 for 20% better performance and cost
+- Added Lambda Powertools for logging
+- Set log retention to 1 week to control costs
+- Added LOG_LEVEL environment variable
+- Removed explicit table naming to avoid conflicts
+- Removed point-in-time recovery to save demo costs
 
 **Infrastructure Validation:**
-- CDK synthesis successful with 1.7MB optimized bundle including AWS SDK and dictionary
-- All IAM permissions properly configured for DynamoDB read/write operations
-- CloudFormation template generates clean outputs for Connect configuration
+- CDK synthesis works with 1.7MB bundle
+- IAM permissions set for DynamoDB read/write
+- CloudFormation outputs ready for Connect
 
 ### CI/CD Pipeline and Connect Integration
 
 ### Key Achievements
 **CI/CD Pipeline Implementation:**
-- Built GitHub Actions workflow for automated testing and deployment
-- Configured Jest test execution on every push and pull request
-- Automated CDK deployment on main branch with proper credential management
-- Added support for Connect instance ARN via GitHub secrets
+- Built GitHub Actions for automated testing and deployment
+- Jest tests run on every push and pull request
+- CDK deploys automatically on main branch
+- Connect instance ARN comes from GitHub secrets
 
 **Amazon Connect Integration:**
-- Created production-ready contact flow JSON that invokes Lambda and speaks results
-- Implemented CDK-based contact flow deployment using CfnContactFlow
-- Added proper IAM permissions for Connect to invoke Lambda function
-- Designed hybrid approach: manual instance setup + automated flow deployment
+- Created contact flow JSON that calls Lambda and speaks results
+- Built CDK contact flow deployment with CfnContactFlow
+- Added IAM permissions for Connect to call Lambda
+- Hybrid approach: manual instance, automated flow
 
 **Documentation Enhancements:**
-- Created comprehensive deployment guide with step-by-step Connect setup
-- Updated all documentation to reflect CI/CD and Connect integration
-- Added troubleshooting section and cost estimates
-- Ensured consistency across all resource names and terminology
+- Created deployment guide with Connect setup steps
+- Updated docs for CI/CD and Connect integration
+- Added troubleshooting and cost estimates
+- Made all resource names consistent
 
 ### Technical Decisions
 **Hybrid Connect Deployment Strategy:**
-- Manual: Instance creation, Lambda permissions, phone number claiming (CDK cannot automate)
-- Automated: Contact flow deployment via CDK when CONNECT_INSTANCE_ARN is provided
-- Reasoning: Balances automation with AWS service limitations
+- Manual: Create instance, add Lambda, claim phone number (CDK can't automate these)
+- Automated: Contact flow deployment when CONNECT_INSTANCE_ARN exists
+- Why: Works within AWS service limits
 
 **GitHub Actions Design:**
-- Pinned action versions for security and reproducibility
-- Single concurrency group prevents multiple deployments
-- Environment variable injection for Connect instance ARN
-- Automatic failure on test failures
+- Pinned action versions for security
+- One deployment at a time with concurrency group
+- Connect instance ARN from environment variable
+- Fails fast if tests fail
 
 ### Critical Issues Resolved
 **Lambda ARN Injection Challenge:**
@@ -286,9 +293,9 @@
 - Implementation: `contactFlowTemplate.replace('LAMBDA_ARN_PLACEHOLDER', vanityGeneratorFunction.functionArn)`
 
 **Connect Permission Complexity:**
-- Issue: Connect requires both CDK permissions AND manual Lambda registration
-- Learning: Even with proper IAM permissions, Connect won't show Lambda in flow editor without manual "Add Lambda" step
-- Resolution: Documentation now emphasizes this critical manual step that cannot be automated
+- Issue: Connect needs CDK permissions AND manual Lambda registration
+- Learning: IAM permissions aren't enough. Must manually add Lambda in Connect.
+- Fix: Documentation now highlights this manual step
 
 **CDK Stack Simplification:**
 - Removed fallback account-level permissions to enforce proper ARN usage
@@ -461,3 +468,12 @@ Your first option is:
 - CDK deploys: Lambda + DynamoDB + IAM permissions
 - Manual setup: Connect instance, Lambda registration, flow design
 - Clear separation of automated vs manual components
+
+## Dictionary Generation (AI-Assisted)
+
+- **Seed list:** `an-array-of-english-words` (~275k words)
+- **Filter rules:** A–Z only, 3–7 letters, reject triple repeats and low-legibility starts, down-weight Q/X/Z
+- **Process:** Precompute T9 digits + scores; export JSON (~13k words) for O(1) lookup and predictable cold starts
+- **Why AI:** I used it to iterate fast on the rules; I set the guardrails and locked the final criteria with tests
+- **Result:** 13,248 words, 90%+ match success rate in end-to-end testing
+- **Production path:** Keep full ~275k in DynamoDB keyed by `digits` and query 3/4/7-digit substrings instead of bundling JSON

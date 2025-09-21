@@ -1,3 +1,23 @@
+/**
+ * generate-english-dictionary.ts
+ *
+ * Purpose:
+ *   One-time generator that builds src/data/english-words.json from
+ *   the npm package "an-array-of-english-words" (~275k words).
+ *
+ * What it does:
+ *   - Filters to 3–7 letter words (A–Z only). Rejects triples and odd prefixes.
+ *   - Converts words to T9 digits once. Scores them. Caps the set (~13k) for Lambda bundle size.
+ *   - Adds metadata so runtime lookups are O(1) without recomputation.
+ *
+ * Why this approach:
+ *   - Demo needs: small bundle, fast cold starts, predictable memory.
+ *   - Production path: keep full words in DynamoDB (PK=digits, SK=word) and query substrings by length.
+ *
+ * Usage:
+ *   ts-node scripts/generate-english-dictionary.ts
+ *   # Outputs src/data/english-words.json (checked into repo for demo)
+ */
 import * as fs from 'fs';
 import * as path from 'path';
 
