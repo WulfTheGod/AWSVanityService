@@ -50,7 +50,7 @@ npx cdk deploy
 
 ## Amazon Connect Setup
 
-> **Automation boundary:** CDK deploys Lambda, DynamoDB, roles, and environment variables. Amazon Connect still needs manual steps: claim a number, attach Lambda to the instance, and select the flow. The flow JSON has UUIDs that break between instances. I document the exact steps so anyone can reproduce them.
+> **What's automated vs manual:** CDK automatically sets up Lambda, DynamoDB, and permissions. Amazon Connect requires manual steps: claim a phone number, add Lambda to the instance, and create the flow. Connect flows have unique IDs that don't work between different instances, so I document the exact manual steps.
 
 ### 1. Create Instance
 Amazon Connect Console → Add instance → Store users in Connect → Create
