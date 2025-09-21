@@ -13,7 +13,7 @@
 
 **Core features shipped:**
 - Phone number processing with E.164 support
-- Vanity generation with 13,248-word English dictionary (90%+ success rate)
+- Vanity generation with 13,248-word English dictionary (high success rate)
 - DynamoDB caching with 30-day TTL and encryption
 - Amazon Connect voice integration with SSML formatting
 - TypeScript modules with clean separation
@@ -21,28 +21,47 @@
 
 *See details: [Roadmap](./docs/roadmap.md) and [Development Journal](./docs/development-journal.md)*
 
-## Dictionary Generation (AI-Assisted)
+## Dictionary Generation Process (AI-Assisted)
 
-This project includes a curated English dictionary. I started with **an-array-of-english-words** (~275k words). Then I built a script to reduce it to ~13k words that work well as phonewords.
+This project includes a curated English dictionary to generate phonewords. I started with **an-array-of-english-words** (~275k words). At first, the dictionary filtering was only meant as a test, but the results were so strong that it became part of the main system.
 
 ### Why AI?
-I used AI to iterate quickly on filter and scoring rules. I set the guardrails and kept final say. The result is a clean 3–7 letter set. It avoids odd words and triple repeats. Match rates went from under 1% to 90%+ in my tests.
+
+AI was used only to speed up filter and scoring rule iteration during dictionary generation. I set the rules, evaluated results, and kept final say on the final dataset. This allowed me to quickly refine toward a usable 3–7 letter set that avoids odd words and triple repeats. Match rates improved significantly from under 1% to high success rates in testing.
+
+**Note:** AI was never used for infrastructure, Lambda code, or Connect integration — only for dictionary generation due to time constraints.
 
 ### Why this source?
-**an-array-of-english-words** is simple and license-friendly. It gave me the word coverage I needed.
+
+**an-array-of-english-words** is simple, free to use, and gave me enough words to test phoneword generation. It worked well for building and testing quickly.
 
 ### What the script does
-It converts letters to T9 digits once. It scores each word and filters the list. Then it caps the set for Lambda bundle size. The output is `src/data/english-words.json` with precomputed mappings. Lookups are O(1) at runtime.
+
+- Converts letters to T9 digits once and stores mappings
+- Scores words by length, quality, and memorability
+- Filters out problematic words and patterns
+- Reduces the set to ~13k words for bundle size and runtime limits
+
+The output is `src/data/english-words.json` with precomputed mappings. Runtime lookups are O(1).
+
+### Runtime Limitation
+
+Using all 275k words in Lambda caused problems with speed and memory. Even though Lambda can run for 15 minutes, processing that many words on every call would be too slow and use too much memory. The smaller 13k word list runs fast and still finds good matches.
 
 ### DynamoDB plan for production
-I'd keep all ~275k words in DynamoDB. Query by digit keys instead of bundling JSON:
-- **Table design**: PK `digits`, SK `word`, attrs `length`, `score`, `category`
-- **Query pattern**: Generate 3, 4, and 7-digit substrings. Query those keys. Merge and rank in Lambda. Cache top 5.
-- **Why better**: No bundle bloat. More matches. Fast queries instead of scans.
 
-> Result: Small demo JSON for now. Clear DynamoDB plan if we need all words later.
+For a real production system, I'd put all 275k words in DynamoDB and search by digit patterns. This avoids size limits in Lambda and gives better word matches.
 
-## ✅ Verification: Store 5 / Speak 3
+- **Table setup**: Store digits as the main key, words as the sort key, plus word details like length and score
+- **How it works**: Search for 3, 4, and 7-digit patterns, combine results, pick the best 5
+- **Why better**: More word matches, faster searches, handles more users
+
+### Demo vs. Production
+
+- **Current demo**: 13k words bundled in the code - started as a test but worked so well I kept it
+- **Better approach**: Put all 275k words in DynamoDB for more complete results
+
+## ✅ System Verification: Store 5 / Speak 3
 
 The Lambda always **stores 5** vanity numbers in DynamoDB and the Connect flow **speaks 3**.
 
@@ -64,7 +83,7 @@ The Lambda always **stores 5** vanity numbers in DynamoDB and the Connect flow *
 
 > **Why this matters:** It proves the assignment works.
 
-## How It Works
+## How the System Works
 
 ![AWSVanityService Architecture](./docs/architecture.png)
 
@@ -75,7 +94,19 @@ The Lambda always **stores 5** vanity numbers in DynamoDB and the Connect flow *
 
 *Full details: [Architecture Decisions](./docs/architecture.md)*
 
-## Quick Start
+### Amazon Connect Integration
+The service integrates with Amazon Connect through a carefully designed contact flow that handles the complete voice experience:
+
+![Connect Flow Example](./docs/exampleflow.png)
+
+**Flow Process:**
+1. **Welcome Message**: Greets caller and explains the service
+2. **Lambda Invocation**: Calls vanity generator with caller's phone number
+3. **Response Validation**: Checks if vanity numbers were successfully generated
+4. **Voice Playback**: Uses SSML to clearly speak the top 3 vanity options
+5. **Call Completion**: Thanks caller and ends the call
+
+## Quick Start Guide
 
 ### Prerequisites
 - AWS Account with CLI configured
@@ -103,7 +134,7 @@ git push origin main
 
 *Full instructions: [Deployment Guide](./docs/deployment-guide.md)*
 
-## Notes for Amazon Connect
+## Amazon Connect Configuration
 
 ### Response Format (Critical)
 Connect requires **STRING_MAP** format. All values must be strings:
@@ -121,7 +152,7 @@ return {
 You must add Lambda to your Connect instance. IAM permissions alone aren't enough.
 Go to: Connect Console → Contact Flows → AWS Lambda → Add your function
 
-## Documentation Index
+## Documentation Reference
 
 | Document | Purpose |
 |----------|---------|
@@ -131,7 +162,7 @@ Go to: Connect Console → Contact Flows → AWS Lambda → Add your function
 | [Project Roadmap](./docs/roadmap.md) | Requirements tracking and completion status |
 | [References & Resources](./docs/references.md) | AWS documentation and resources used |
 
-## Data Dictionary
+## Data Schema Reference
 
 **DynamoDB Schema:**
 ```typescript
@@ -144,21 +175,39 @@ Go to: Connect Console → Contact Flows → AWS Lambda → Add your function
 }
 ```
 
-## Assignment Q&A
+## Project Design Decisions
 
-**1) Why I built it this way**
-I chose serverless (Lambda + DynamoDB + Connect) to keep costs low. It scales on its own. DynamoDB stores 5 results per caller with TTL. Repeat calls are instant. The hardest part was Amazon Connect. It needs STRING_MAP responses and manual Lambda registration. I kept testing until Connect spoke all 3 results clearly. Then I documented the exact response format and SSML tags.
+### Why I built it this way
 
-**2) Shortcuts I took**
-I bundled the word list into Lambda for quick delivery. I used broad IAM permissions while building. I kept Connect setup manual because its flow JSON breaks between instances. In production I'd use the DynamoDB plan. I'd lock down IAM to specific resources. I'd automate what I could in Connect.
+**Serverless fits the requirements.** Lambda + DynamoDB + Amazon Connect keeps costs low and scales automatically. The 30-day TTL in DynamoDB makes the "store 5, speak 3" pattern simple to implement.
 
-**3) What I'd do with more time**
-- **Monitoring**: CloudWatch metrics, alarms, and dashboard
-- **Better scoring**: Multi-word blends, n-gram scoring, industry dictionaries
-- **Operations**: Least-privilege IAM, staged environments, drift detection
-- **Developer tools**: CLI for test runs, web UI for browsing results
+**Connect constraints shaped the architecture.** Amazon Connect requires STRING_MAP responses (flat key-value pairs with all string values) and manual Lambda registration in the console. I restructured the Lambda response to use individual string fields (`top3_0`, `top3_1`, `top3_2`) instead of arrays.
 
-## Project Structure
+**Performance over perfection.** A pre-filtered 13k word dictionary with T9 mappings gives fast results within Lambda's deployment limits. The original plan was DynamoDB storage, but bundling proved simpler for the demo timeline.
+
+**Struggles I solved:** Connect failed silently on array responses until I discovered the STRING_MAP requirement; fixed Jest test hangs caused by 0/1 digits triggering infinite loops; resolved CDK bundling conflicts with AWS SDK.
+
+### Shortcuts I took
+
+**Bundled dictionary in Lambda code.** The 1.4MB JSON file deploys quickly but requires redeployment for updates. Production should use DynamoDB with the full 275k word dataset and query by digit patterns.
+
+**Broad IAM permissions.** Used AdministratorAccess during development for speed. Production needs least-privilege policies scoped to specific DynamoDB tables and Lambda functions.
+
+**Manual Connect setup.** Contact flow JSON contains instance-specific UUIDs that break portability, so I documented manual steps. Better automation would require programmatic flow creation APIs.
+
+**AI for dictionary filtering only.** Used AI to iterate quickly on word filtering rules due to time constraints. All Lambda code, infrastructure, and Connect integration were built manually.
+
+### What I would do with more time
+
+**Use the full word database.** Load all 275k words from an-array-of-english-words into DynamoDB instead of the current 13k subset. This would give better results and more chances for unique vanity numbers.
+
+**Add monitoring.** Set up alerts for errors and slow responses so I know when something breaks.
+
+**Better word matching.** Try combining multiple words or use business-specific dictionaries to make more relevant vanity numbers.
+
+**Create better error handling.** If the Lambda fails during a call, redirect to a human customer service line, put callers in a queue with hold music, or add an interactive game to keep them busy while waiting.
+
+## Codebase Structure
 
 ```
 ├── src/lambda/vanity-generator/  # Modular TypeScript Lambda
@@ -171,12 +220,13 @@ I bundled the word list into Lambda for quick delivery. I used broad IAM permiss
 └── .github/workflows/           # CI/CD automation
 ```
 
-## Security & Production Notes
+## Security & Production Considerations
 
 **Demo Configuration:**
 - GitHub OIDC for temporary credentials (no static keys)
 - AdministratorAccess for rapid development
-- PII masking in logs, DynamoDB encryption at rest
+- PII masking in logs - phone numbers are not stored in plaintext logs
+- DynamoDB encryption at rest
 
 **Production Recommendations:**
 - Least-privilege IAM scoped to specific resources
