@@ -113,7 +113,7 @@ Each module does one thing. The handler coordinates while business logic stays s
 **Monitoring:**
 - CloudWatch Alarms: Lambda errors > 0 over 5min, P95 duration > 2s
 - Custom metrics: Cache hit rate, word match rate, fallback usage
-- X-Ray tracing for end-to-end response times
+- Performance monitoring for end-to-end response times
 
 **Optimization:**
 - Dictionary compression or move to Lambda Layer
