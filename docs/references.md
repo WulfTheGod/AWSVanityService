@@ -1,22 +1,17 @@
 # References & Resources
 
-## Most Consulted Resources
-
-- **[Invoke Lambda Function Block](https://docs.aws.amazon.com/connect/latest/adminguide/invoke-lambda-function-block.html)** - Lambda invocation and STRING_MAP response format
-- **[Amazon Connect Lambda Function Input Event](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html#function-input)** - Understanding Connect event structure
-- **[AWS CDK Getting Started](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)** - CDK setup and project structure
-- **[AWS Lambda Powertools](https://docs.powertools.aws.dev/lambda/typescript/latest/)** - Production-ready logging and monitoring
-- **[an-array-of-english-words](https://www.npmjs.com/package/an-array-of-english-words)** - Word list source for dictionary generation
-
 ## AWS Documentation
 
 ### Core Services
+- **[AWS CDK Getting Started](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)** - CDK setup and project structure
 - [Lambda Documentation](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) - Lambda concepts and patterns
 - [Amazon Connect Admin Guide](https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html) - Connect service overview
 
 ### Lambda Implementation
 - [Lambda Handler in Node.js](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html) - Handler function and event processing
+- **[Amazon Connect Lambda Function Input Event](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html#function-input)** - Understanding Connect event structure
 - [Lambda Error Handling](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-exceptions.html) - Error handling patterns
+- **[AWS Lambda Powertools](https://docs.powertools.aws.dev/lambda/typescript/latest/)** - Production-ready logging and monitoring
 - [Lambda ARM64 Architecture](https://aws.amazon.com/blogs/aws/aws-lambda-functions-powered-by-aws-graviton2-processor-run-your-functions-on-arm-and-get-up-to-34-better-price-performance/) - Performance and cost benefits
 
 ### DynamoDB Integration
@@ -34,6 +29,7 @@
 ### Amazon Connect Integration
 - [Create an Amazon Connect Instance](https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html) - Instance setup and configuration
 - [Grant Amazon Connect Access to Lambda](https://docs.aws.amazon.com/connect/latest/adminguide/connect-lambda-functions.html) - Lambda integration setup and manual registration requirements
+- **[Invoke Lambda Function Block](https://docs.aws.amazon.com/connect/latest/adminguide/invoke-lambda-function-block.html)** - Lambda invocation and STRING_MAP response format
 - [Amazon Connect Contact Flow Language](https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html) - Contact flow JSON structure (complex UUID requirements)
 - [Contact Flow Designer](https://docs.aws.amazon.com/connect/latest/adminguide/contact-flow-designer.html) - Manual flow creation (more reliable than CDK)
 - [SSML in Amazon Connect](https://docs.aws.amazon.com/connect/latest/adminguide/ssml.html) - Speech formatting for natural voice
@@ -65,6 +61,7 @@
 - Researched commercial vanity number examples (1-800-FLOWERS, 1-800-CALL-ATT)
 
 ### Algorithm & Data Resources
+- **[an-array-of-english-words](https://www.npmjs.com/package/an-array-of-english-words)** - Word list source for dictionary generation
 - [T9 Predictive Text](https://en.wikipedia.org/wiki/T9_(predictive_text)) - Understanding phone keypad letter mapping
 - [Vanity Number Industry Standards](https://en.wikipedia.org/wiki/Phoneword) - Research on commercial vanity number patterns
 
