@@ -1,9 +1,8 @@
 name: Test and Deploy
 
 on:
-  push:
+  pull_request:
     branches: [main]
-
 
 # Ensure only one deployment runs at a time
 concurrency:
@@ -65,41 +64,3 @@ jobs:
         run: |
           echo "🔍 Infrastructure changes in this PR:"
           npx cdk diff --require-approval never || true
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    # Only deploy when pushing to main branch
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: us-east-1
-          role-session-name: GitHubActions-CDKDeploy
-
-      - name: Deploy infrastructure
-        run: |
-          echo "🚀 Deploying AWS infrastructure..."
-          npx cdk deploy --require-approval never --progress events
-
-      - name: Upload CDK artifacts on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cdk-artifacts
-          path: cdk.out/
-          retention-days: 7
