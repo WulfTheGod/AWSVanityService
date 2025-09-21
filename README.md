@@ -1,4 +1,4 @@
-# TESTING
+# AWS Vanity Service
 
 A serverless phone number to vanity number conversion service built with AWS Lambda, DynamoDB, and Amazon Connect.
 
