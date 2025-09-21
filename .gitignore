@@ -6,7 +6,7 @@ dist/
 cdk.out/
 .cdk.staging/
 
-# Compiled JavaScript (keep specific JS files we need)
+# Compiled JavaScript
 *.js
 !cdk/*.js
 !jest.config.js
