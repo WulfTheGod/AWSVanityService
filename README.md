@@ -138,6 +138,18 @@ The service integrates with Amazon Connect through a carefully designed contact 
 4. **Voice Playback**: Uses SSML to clearly speak the top 3 vanity options
 5. **Call Completion**: Thanks caller and ends the call
 
+### CI/CD Deployment Pipeline
+The project uses GitHub Actions with AWS OIDC for secure, automated deployments:
+
+![GitHub Actions Deployment Flow](./docs/githubactionsflow.png)
+
+**Pipeline Features:**
+- **Zero stored credentials**: OIDC token exchange for temporary AWS access
+- **Automated testing**: All tests must pass before deployment
+- **Concurrency control**: Only one deployment runs at a time
+- **Infrastructure as Code**: CDK manages all AWS resources
+- **Automatic rollback**: CloudFormation handles failed deployments
+
 ## Quick Start Guide
 
 ### Prerequisites
