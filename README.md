@@ -4,6 +4,38 @@
 
 > Converts phone numbers to vanity numbers. Stores the best **5** and speaks the top **3** through Amazon Connect.
 
+## Project Design Decisions
+
+### Why I built it this way
+
+**Serverless fits the requirements.** Lambda + DynamoDB + Amazon Connect keeps costs low and scales automatically. The 30-day TTL in DynamoDB makes the "store 5, speak 3" pattern simple to implement.
+
+**Connect constraints shaped the architecture.** Amazon Connect requires STRING_MAP responses (flat key-value pairs with all string values) and manual Lambda registration in the console. I restructured the Lambda response to use individual string fields (`top3_0`, `top3_1`, `top3_2`) instead of arrays.
+
+**Performance over perfection.** A pre-filtered 13k word dictionary with T9 mappings gives fast results within Lambda's deployment limits. The original plan was DynamoDB storage, but bundling proved simpler for the demo timeline.
+
+**Struggles I solved:** Connect failed silently on array responses until I discovered the STRING_MAP requirement; fixed Jest test hangs caused by 0/1 digits triggering infinite loops; resolved CDK bundling conflicts with AWS SDK.
+
+### Shortcuts I took
+
+**Bundled dictionary in Lambda code.** The 1.4MB JSON file deploys quickly but requires redeployment for updates. Production should use DynamoDB with the full 275k word dataset and query by digit patterns.
+
+**Broad IAM permissions.** Used AdministratorAccess during development for speed. Production needs least-privilege policies scoped to specific DynamoDB tables and Lambda functions.
+
+**Manual Connect setup.** Contact flow JSON contains instance-specific UUIDs that break portability, so I documented manual steps. Better automation would require programmatic flow creation APIs.
+
+**AI for dictionary filtering only.** Used AI to iterate quickly on word filtering rules due to time constraints. All Lambda code, infrastructure, and Connect integration were built manually.
+
+### What I would do with more time
+
+**Use the full word database.** Load all 275k words from an-array-of-english-words into DynamoDB instead of the current 13k subset. This would give better results and more chances for unique vanity numbers.
+
+**Add monitoring.** Set up alerts for errors and slow responses so I know when something breaks.
+
+**Better word matching.** Try combining multiple words or use business-specific dictionaries to make more relevant vanity numbers.
+
+**Create better error handling.** If the Lambda fails during a call, redirect to a human customer service line, put callers in a queue with hold music, or add an interactive game to keep them busy while waiting.
+
 ## TL;DR (30 seconds)
 - **Stack**: Lambda + DynamoDB + Amazon Connect (serverless, cheap, fast)
 - **Exact scope**: Store 5 vanity numbers, speak 3; cached by caller with 30-day TTL
@@ -174,38 +206,6 @@ Go to: Connect Console → Contact Flows → AWS Lambda → Add your function
   ttl: number             // Unix timestamp for 30-day auto-deletion
 }
 ```
-
-## Project Design Decisions
-
-### Why I built it this way
-
-**Serverless fits the requirements.** Lambda + DynamoDB + Amazon Connect keeps costs low and scales automatically. The 30-day TTL in DynamoDB makes the "store 5, speak 3" pattern simple to implement.
-
-**Connect constraints shaped the architecture.** Amazon Connect requires STRING_MAP responses (flat key-value pairs with all string values) and manual Lambda registration in the console. I restructured the Lambda response to use individual string fields (`top3_0`, `top3_1`, `top3_2`) instead of arrays.
-
-**Performance over perfection.** A pre-filtered 13k word dictionary with T9 mappings gives fast results within Lambda's deployment limits. The original plan was DynamoDB storage, but bundling proved simpler for the demo timeline.
-
-**Struggles I solved:** Connect failed silently on array responses until I discovered the STRING_MAP requirement; fixed Jest test hangs caused by 0/1 digits triggering infinite loops; resolved CDK bundling conflicts with AWS SDK.
-
-### Shortcuts I took
-
-**Bundled dictionary in Lambda code.** The 1.4MB JSON file deploys quickly but requires redeployment for updates. Production should use DynamoDB with the full 275k word dataset and query by digit patterns.
-
-**Broad IAM permissions.** Used AdministratorAccess during development for speed. Production needs least-privilege policies scoped to specific DynamoDB tables and Lambda functions.
-
-**Manual Connect setup.** Contact flow JSON contains instance-specific UUIDs that break portability, so I documented manual steps. Better automation would require programmatic flow creation APIs.
-
-**AI for dictionary filtering only.** Used AI to iterate quickly on word filtering rules due to time constraints. All Lambda code, infrastructure, and Connect integration were built manually.
-
-### What I would do with more time
-
-**Use the full word database.** Load all 275k words from an-array-of-english-words into DynamoDB instead of the current 13k subset. This would give better results and more chances for unique vanity numbers.
-
-**Add monitoring.** Set up alerts for errors and slow responses so I know when something breaks.
-
-**Better word matching.** Try combining multiple words or use business-specific dictionaries to make more relevant vanity numbers.
-
-**Create better error handling.** If the Lambda fails during a call, redirect to a human customer service line, put callers in a queue with hold music, or add an interactive game to keep them busy while waiting.
 
 ## Codebase Structure
 
