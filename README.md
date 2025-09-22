@@ -42,7 +42,7 @@ AI was used only to speed up filter and scoring rule iteration during dictionary
 - Filters out problematic words and patterns
 - Reduces the set to ~13k words for bundle size and runtime limits
 
-The output is `src/data/english-words.json` with precomputed mappings. Runtime lookups are O(1).
+The output is `src/data/english-words.json` with precomputed mappings for fast runtime lookups.
 
 ### Runtime Limitation
 
